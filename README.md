@@ -10,5 +10,3 @@ In this repository, you will find a comprehensive collection of training materia
 ## Feel Free to Use and Connect
 
 Feel free to use the content here for your Ballerina learning/teaching journey. If you have questions or need further assistance, don't hesitate to reach out to us via email at contact@ballerina.io or join the Ballerina community on [Discord](https://discord.gg/ballerinalang).
-
-
