@@ -1,0 +1,1 @@
+This is a demonstration done to showscase how Ballerina can be used to easily to work with GraphQL, Apache Kafka and Docker. The particular sample is taken from [here](https://github.com/ballerina-platform/module-ballerina-graphql/tree/master/examples/news_alerts).
