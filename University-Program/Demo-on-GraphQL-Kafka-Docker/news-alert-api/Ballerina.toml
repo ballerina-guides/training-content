@@ -1,6 +1,6 @@
 [package]
 org = "wso2"
-name = "news_alert_demo"
+name = "news_alert_api"
 version = "0.1.0"
 distribution = "2201.8.1"
 
