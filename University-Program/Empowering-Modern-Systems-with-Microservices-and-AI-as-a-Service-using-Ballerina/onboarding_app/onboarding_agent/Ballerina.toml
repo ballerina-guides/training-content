@@ -1,0 +1,8 @@
+[package]
+org = "wso2"
+name = "onboarding_agent"
+version = "0.1.0"
+distribution = "2201.8.1-20231005-145200-775a6213"
+
+[build-options]
+observabilityIncluded = true
