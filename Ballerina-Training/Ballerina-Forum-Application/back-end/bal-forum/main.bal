@@ -119,15 +119,11 @@ service /api on forumServerEP {
         return created;
     }
 
-    resource function get posts() returns http:Ok|error {
+    resource function get posts() returns Post[]|error {
         stream<PostDb, sql:Error?> postStream = forumDbClient->query(`SELECT * FROM posts`);
         Post[] posts = check from var post in postStream
             select check transformPostFromDatabase(post);
-        return {
-            body: {
-                posts: posts
-            }
-        };
+        return posts;
     }
 
     resource function post posts/[string id]/like(Like like) returns Ok|NotFound|Conflict|error {
