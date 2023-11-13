@@ -1,0 +1,23 @@
+adminGmail = "ADMIN_EMAIL"
+
+[dbConfig]
+database = "DATABASE_NAME"
+user = "DATABASE_USER"
+password = "DATABASE_PASSWORD"
+host = "HOST"
+port = 3306
+
+[gmailAuthConfig]
+refreshToken = "REFRESH_TOKEN"
+clientSecret = "CLIENT_SECRET"
+clientId = "CLIENT_ID"
+
+[sentimentEpConfig]
+endpointUrl = "ENDPOINT_URL"
+retryInterval = 3.0
+
+[sentimentEpConfig.authConfig]
+refreshUrl = "REFRESH_URL"
+refreshToken = "REFRESH_TOKEN"
+clientId = "CLIENT_ID"
+clientSecret = "CLIENT_SECRET"
