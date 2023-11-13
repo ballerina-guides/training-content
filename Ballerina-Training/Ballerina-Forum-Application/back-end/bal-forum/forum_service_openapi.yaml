@@ -1,0 +1,498 @@
+openapi: 3.0.1
+info:
+  title: Api
+  version: 0.1.0
+servers:
+- url: "{server}:{port}/api"
+  variables:
+    server:
+      default: http://localhost
+    port:
+      default: PORT
+paths:
+  /users:
+    post:
+      operationId: postUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /users/{id}:
+    get:
+      operationId: getUsersId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /login:
+    post:
+      operationId: postLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessLogin'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /users/{id}/posts:
+    post:
+      operationId: postUsersIdPosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPost'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /posts:
+    get:
+      operationId: getPosts
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /posts/{id}/like:
+    post:
+      operationId: postPostsIdLike
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Like'
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "404":
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /posts/{id}:
+    get:
+      operationId: getPostsId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "404":
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /posts/{id}/comments:
+    post:
+      operationId: postPostsIdComments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewComment'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "404":
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+components:
+  schemas:
+    DayOfWeek:
+      description: The day of week according to the US convention.
+      oneOf:
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+    Comment:
+      required:
+      - comment
+      - id
+      - postedAt
+      - username
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the user
+        username:
+          type: string
+          description: Username of the user
+        comment:
+          type: string
+          description: Comment of the user
+        postedAt:
+          $ref: '#/components/schemas/Date'
+      description: Represents the comment record
+    SuccessResponse:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message
+      description: Represents the success details
+    User:
+      required:
+      - email
+      - id
+      - name
+      - subscribtions
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the user
+        email:
+          type: string
+          description: Email of the user
+        id:
+          type: string
+          description: Id of the user
+        subscribtions:
+          type: array
+          description: Subscribtions of the user
+          items:
+            type: string
+      description: Represents the user record
+    Post:
+      required:
+      - comments
+      - description
+      - id
+      - likes
+      - postedAt
+      - title
+      - username
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the post
+        description:
+          type: string
+          description: Description of the post
+        username:
+          type: string
+          description: Username of the user who posted the post
+        id:
+          type: string
+          description: Id of the post
+        likes:
+          type: array
+          description: Likes of the post
+          items:
+            type: string
+        comments:
+          type: array
+          description: Comments of the post
+          items:
+            $ref: '#/components/schemas/Comment'
+        postedAt:
+          $ref: '#/components/schemas/Date'
+      description: Represents the post record
+    ErrorResponse:
+      required:
+      - error_message
+      type: object
+      properties:
+        error_message:
+          type: string
+          description: Error message
+      description: Represents the common error details
+    ErrorPayload:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Reason phrase
+        path:
+          type: string
+          description: Request path
+        method:
+          type: string
+          description: Method type of the request
+        message:
+          type: string
+          description: Error message
+        timestamp:
+          type: string
+          description: Timestamp of the error
+        status:
+          type: integer
+          description: Relevant HTTP status code
+          format: int32
+    NewPost:
+      required:
+      - description
+      - timestamp
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the post
+        description:
+          type: string
+          description: Description of the post
+        timestamp:
+          type: string
+          description: Posted time
+      description: Represents the new post request
+    Like:
+      required:
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Id of the user
+      description: Represents the user like request
+    NewComment:
+      required:
+      - comment
+      - timestamp
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          description: Id of the user
+        comment:
+          type: string
+          description: Comment of the user
+        timestamp:
+          type: string
+          description: Posted time
+      description: Represents the user comment request
+    SuccessLogin:
+      required:
+      - message
+      - user
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message
+        user:
+          $ref: '#/components/schemas/User'
+      description: Represents the login success details
+    TimeOfDayFields:
+      required:
+      - hour
+      - minute
+      type: object
+      properties:
+        hour:
+          type: integer
+          format: int64
+        minute:
+          type: integer
+          format: int64
+        second:
+          $ref: '#/components/schemas/Seconds'
+    UserLogin:
+      required:
+      - name
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+          description: Username of the user
+        password:
+          type: string
+          description: Password of the user
+      description: Represents the user login request
+    NewUser:
+      required:
+      - email
+      - name
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the user
+        email:
+          type: string
+          description: Email of the user
+        password:
+          type: string
+          description: Password of the user
+      description: Represents the new user request
+    Date:
+      required:
+      - year
+      - month
+      - day
+      - hour
+      - minute
+      type: object
+      properties:
+        year:
+          type: integer
+          format: int64
+          description: Year of the date
+        month:
+          type: integer
+          format: int64
+          description: Month of the date
+        day:
+          type: integer
+          format: int64
+          description: Day of the date
+        hour:
+          type: integer
+          format: int64
+          description: Hour of the date
+        minute:
+          type: integer
+          format: int64
+          description: Minute of the date
