@@ -32,3 +32,12 @@ services:
     ports:
       - "9445:9445"
     network_mode: "host"
+
+  jaeger:
+    image: 'jaegertracing/opentelemetry-all-in-one'
+    ports:
+      - '13133:13133'
+      - '16686:16686'
+      - '55680:55680'
+      - '4317:4317'
+    network_mode: "host"

@@ -21,3 +21,16 @@ refreshUrl = "REFRESH_URL"
 refreshToken = "REFRESH_TOKEN"
 clientId = "CLIENT_ID"
 clientSecret = "CLIENT_SECRET"
+
+[ballerina.observe]
+# metricsEnabled=true
+# metricsReporter="prometheus"
+tracingEnabled=true
+tracingProvider="jaeger"
+
+# [ballerinax.prometheus]
+# port=9797
+# host="0.0.0.0"
+
+[ballerinax.jaeger]
+agentPort=4317

@@ -3,6 +3,7 @@ import ballerina/sql;
 import ballerina/task;
 import ballerina/time;
 import ballerina/uuid;
+import ballerinax/jaeger as _;
 
 configurable int port = 4000;
 
