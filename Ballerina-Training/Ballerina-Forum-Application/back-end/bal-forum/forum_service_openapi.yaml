@@ -423,20 +423,6 @@ components:
         user:
           $ref: '#/components/schemas/User'
       description: Represents the login success details
-    TimeOfDayFields:
-      required:
-      - hour
-      - minute
-      type: object
-      properties:
-        hour:
-          type: integer
-          format: int64
-        minute:
-          type: integer
-          format: int64
-        second:
-          $ref: '#/components/schemas/Seconds'
     UserLogin:
       required:
       - name
