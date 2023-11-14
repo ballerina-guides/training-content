@@ -84,6 +84,8 @@ configurable string adminGmail = ?;
 
 final gmail:Client gmailClient = check new ({auth: gmailAuthConfig});
 
+const WELCOME_MAIL_SUBJECT = "Welcome to Ballerina Forum";
+
 class EmailSenderTask {
     *task:Job;
     private final string recipientName;
@@ -95,23 +97,26 @@ class EmailSenderTask {
     }
 
     public function execute() {
-        string subject = "Welcome to Ballerina Forum";
-        string message = "Hi " + self.recipientName + ",\n\n" +
-            "Welcome to Ballerina Forum. We are glad to have you onboard.\n\n" +
-            "Regards,\n" +
-            "Ballerina Forum Team";
         gmail:MessageRequest request = {
             recipient: self.recipientEmail,
             sender: adminGmail,
-            subject: subject,
-            messageBody: message,
+            subject: WELCOME_MAIL_SUBJECT,
+            messageBody: buildMessage(self.recipientName),
             contentType: gmail:TEXT_PLAIN
         };
         gmail:Message|error sendMessage = gmailClient->sendMessage(request);
         if sendMessage is error {
-            log:printError("Failed to send the email", 'error = sendMessage);
+            log:printError("Failed to send the email", 'error = sendMessage, receipient = self.recipientEmail);
         } else {
-            log:printInfo("The email has been sent", recipient = self.recipientEmail, subject = subject);
+            log:printInfo("The email has been sent", recipient = self.recipientEmail);
         }
     }
 }
+
+function buildMessage(string recipientName) returns string =>
+string `Hi ${recipientName},  
+
+Welcome to Ballerina Forum. We are glad to have you on board.  
+
+Regards,  
+Ballerina Forum Team`;

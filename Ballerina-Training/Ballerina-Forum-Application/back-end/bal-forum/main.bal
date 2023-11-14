@@ -4,26 +4,24 @@ import ballerina/task;
 import ballerina/time;
 import ballerina/uuid;
 
-configurable int PORT = 4000;
-listener http:Listener forumServerEP = new (PORT);
+configurable int port = 4000;
 
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
     }
 }
-service /api on forumServerEP {
-    resource function post users(NewUser newUser) returns Created|Conflict|error {
+service /api on new http:Listener(port) {
+    resource function post users(UserRegistration newUser) returns Created|Conflict|error {
         User|error user = forumDbClient->queryRow(`
             SELECT id, name, email FROM users WHERE name = ${newUser.name}
         `);
         if user is User {
-            Conflict userExists = {
+            return {
                 body: {
                     error_message: "User already exists"
                 }
             };
-            return userExists;
         }
 
         string id = uuid:createType1AsString();
@@ -33,32 +31,29 @@ service /api on forumServerEP {
 
         _ = start sendEmailNotification(newUser);
 
-        Created userCreated = {
+        return {
             body: {
                 message: "User created successfully!"
             }
         };
-        return userCreated;
     }
 
     resource function get users/[string id]() returns User|NotFound|error {
-        UserDb|error userDb = forumDbClient->queryRow(`
+        UserInDatabase|error userDb = forumDbClient->queryRow(`
             SELECT name, email, id, subscribtions FROM users WHERE id = ${id}
         `);
-        if userDb is UserDb {
-            User user = check transformUserFromDatabase(userDb);
-            return user;
+        if userDb is UserInDatabase {
+            return transformUserFromDatabase(userDb);
         }
 
-        NotFound userNotFound = {
+        return {
             body: {
                 error_message: "User not found"
             }
         };
-        return userNotFound;
     }
 
-    resource function post login(UserLogin userLogin) returns LoginOk|Unauthorized {
+    resource function post login(UserLoginDetails userLogin) returns LoginOk|Unauthorized {
         User|error user = forumDbClient->queryRow(`
             SELECT id, name, email FROM users WHERE name = ${userLogin.name} && password = ${userLogin.password}
         `);
@@ -80,134 +75,124 @@ service /api on forumServerEP {
         return unauthorized;
     }
 
-    resource function post users/[string id]/posts(NewPost newPost) returns Created|Forbidden|error {
+    resource function post users/[string id]/posts(NewForumPost newPost) returns Created|Forbidden|error {
         Sentiment sentiment = check sentimentClient->/api/sentiment.post({
             text: newPost.description
         });
         if sentiment.label == "neg" {
-            Forbidden forbidden = {
+            return {
                 body: {
                     error_message: "Post rejected due to negative sentiment"
                 }
             };
-            return forbidden;
         }
 
-        UserDb userDb = check forumDbClient->queryRow(`
+        UserInDatabase userDb = check forumDbClient->queryRow(`
             SELECT name, email, id, subscribtions FROM users WHERE id = ${id}
         `);
 
         User user = check transformUserFromDatabase(userDb);
-        Post post = check createPostFromNewPost(newPost, user.name);
+        ForumPost post = check createPostFromNewPost(newPost, user.name);
 
         _ = check forumDbClient->execute(`
             INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes.toJsonString()}, ${post.comments.toJsonString()}, ${post.postedAt})
         `);
 
-        if user.subscribtions.indexOf(post.id) is () {
-            user.subscribtions.push(post.id);
-            _ = check forumDbClient->execute(`
+        user.subscribtions.push(post.id);
+        _ = check forumDbClient->execute(`
                 UPDATE users SET subscribtions = ${user.subscribtions.toJsonString()} WHERE id = ${id}
             `);
-        }
 
-        Created created = {
+        return {
             body: {
                 message: "Post created successfully!"
             }
         };
-        return created;
     }
 
-    resource function get posts() returns Post[]|error {
-        stream<PostDb, sql:Error?> postStream = forumDbClient->query(`SELECT * FROM posts`);
-        Post[] posts = check from var post in postStream
+    resource function get posts() returns ForumPost[]|error {
+        stream<ForumPostInDatabase, sql:Error?> postStream = forumDbClient->query(`SELECT * FROM posts`);
+        ForumPost[] posts = check from var post in postStream
             select check transformPostFromDatabase(post);
         return posts;
     }
 
     resource function post posts/[string id]/like(Like like) returns Ok|NotFound|Conflict|error {
-        PostDb|error postDb = forumDbClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
-        if postDb is PostDb {
-            Post post = check transformPostFromDatabase(postDb);
-            if post.likes.indexOf(like.userId) is int {
-                Conflict alreadyLiked = {
-                    body: {
-                        error_message: "You have already liked this post"
-                    }
-                };
-                return alreadyLiked;
-            }
+        ForumPostInDatabase|error postDb = forumDbClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        if postDb is error {
+            NotFound postNotFound = {
+                body: {
+                    error_message: "Post not found"
+                }
+            };
+            return postNotFound;
+        }
 
-            post.likes.push(like.userId);
-            _ = check forumDbClient->execute(`
+        ForumPost post = check transformPostFromDatabase(postDb);
+        if post.likes.indexOf(like.userId) is int {
+            Conflict alreadyLiked = {
+                body: {
+                    error_message: "You have already liked this post"
+                }
+            };
+            return alreadyLiked;
+        }
+
+        post.likes.push(like.userId);
+        _ = check forumDbClient->execute(`
                 UPDATE posts SET likes = ${post.likes.toJsonString()} WHERE id = ${id}
             `);
 
-            Ok liked = {
+        return {
+            body: {
+                message: "Post liked successfully!"
+            }
+        };
+    }
+
+    resource function get posts/[string id]() returns ForumPost|NotFound|error {
+        ForumPostInDatabase|error postDb = forumDbClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        if postDb is error {
+            return {
                 body: {
-                    message: "Post liked successfully!"
+                    error_message: "Post not found"
                 }
             };
-            return liked;
         }
-
-        NotFound postNotFound = {
-            body: {
-                error_message: "Post not found"
-            }
-        };
-        return postNotFound;
+        return transformPostFromDatabase(postDb);
     }
 
-    resource function get posts/[string id]() returns Post|NotFound|error {
-        PostDb|error postDb = forumDbClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
-        if postDb is PostDb {
-            Post post = check transformPostFromDatabase(postDb);
-            return post;
+    resource function post posts/[string id]/comments(NewPostComment newComment) returns Created|NotFound|error {
+        ForumPostInDatabase|error postDb = forumDbClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        if postDb is error {
+            return {
+                body: {
+                    error_message: "Post not found"
+                }
+            };
         }
 
-        NotFound postNotFound = {
-            body: {
-                error_message: "Post not found"
-            }
-        };
-        return postNotFound;
-    }
+        ForumPost post = check transformPostFromDatabase(postDb);
+        PostComment comment = check createCommentFromNewComment(newComment);
 
-    resource function post posts/[string id]/comments(NewComment newComment) returns Created|NotFound|error {
-        PostDb|error postDb = forumDbClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
-        if postDb is PostDb {
-            Post post = check transformPostFromDatabase(postDb);
-            Comment comment = check createCommentFromNewComment(newComment);
-
-            post.comments.push(comment);
-            _ = check forumDbClient->execute(`
+        post.comments.push(comment);
+        _ = check forumDbClient->execute(`
                 UPDATE posts SET comments = ${post.comments.toJsonString()} WHERE id = ${id}
             `);
 
-            if post.username != newComment.username {
-                _ = start sendNatsNotification(id, newComment.username, post.title);
-            }
-
-            Created commentCreated = {
-                body: {
-                    message: "Comment added successfully!"
-                }
-            };
-            return commentCreated;
+        if post.username != newComment.username {
+            _ = start sendNatsNotification(id, newComment.username, post.title);
         }
 
-        NotFound postNotFound = {
+        return {
             body: {
-                error_message: "Post not found"
+                message: "Comment added successfully!"
             }
         };
-        return postNotFound;
     }
 }
 
-isolated function sendEmailNotification(NewUser user) returns error? {
+isolated function sendEmailNotification(UserRegistration user) returns error? {
     time:Utc scheduleTimeUtc = time:utcAddSeconds(time:utcNow(), 30);
     time:Civil scheduleTime = time:utcToCivil(scheduleTimeUtc);
 

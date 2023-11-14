@@ -1,7 +1,7 @@
 import ballerina/time;
 import ballerina/uuid;
 
-function transformPostFromDatabase(PostDb postDb) returns Post|error => {
+function transformPostFromDatabase(ForumPostInDatabase postDb) returns ForumPost|error => {
     title: postDb.title,
     username: postDb.username,
     description: postDb.description,
@@ -11,14 +11,14 @@ function transformPostFromDatabase(PostDb postDb) returns Post|error => {
     postedAt: postDb.postedAt
 };
 
-function transformUserFromDatabase(UserDb userDb) returns User|error => {
+function transformUserFromDatabase(UserInDatabase userDb) returns User|error => {
     name: userDb.name,
     id: userDb.id,
     email: userDb.email,
     subscribtions: check userDb.subscribtions.fromJsonStringWithType()
 };
 
-function createPostFromNewPost(NewPost newPost, string username) returns Post|error => {
+function createPostFromNewPost(NewForumPost newPost, string username) returns ForumPost|error => {
     title: newPost.title,
     username: username,
     description: newPost.description,
@@ -28,7 +28,7 @@ function createPostFromNewPost(NewPost newPost, string username) returns Post|er
     postedAt: check time:civilFromString(newPost.timestamp)
 };
 
-function createCommentFromNewComment(NewComment newComment) returns Comment|error => {
+function createCommentFromNewComment(NewPostComment newComment) returns PostComment|error => {
     id: uuid:createType1AsString(),
     username: newComment.username,
     comment: newComment.comment,
