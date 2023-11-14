@@ -1,5 +1,5 @@
 [package]
-org = "tharmigan"
+org = "wso2"
 name = "bal_forum"
 version = "0.1.0"
 distribution = "2201.8.2"
