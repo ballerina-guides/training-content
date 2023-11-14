@@ -93,15 +93,18 @@ service /api on new http:Listener(port) {
 
         User user = check transformUserFromDatabase(userDb);
         ForumPost post = check createPostFromNewPost(newPost, user.name);
+        transaction {
+            _ = check forumDbClient->execute(`
+                INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes.toJsonString()}, ${post.comments.toJsonString()}, ${post.postedAt})
+            `);
 
-        _ = check forumDbClient->execute(`
-            INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes.toJsonString()}, ${post.comments.toJsonString()}, ${post.postedAt})
-        `);
-
-        user.subscribtions.push(post.id);
-        _ = check forumDbClient->execute(`
+            user.subscribtions.push(post.id);
+            _ = check forumDbClient->execute(`
                 UPDATE users SET subscribtions = ${user.subscribtions.toJsonString()} WHERE id = ${id}
             `);
+
+            check commit;
+        }
 
         return {
             body: {
