@@ -6,17 +6,11 @@ import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 import ballerinax/nats;
 
-# Database related configurations
 type DatabaseConfig record {|
-    # The database host
     string host;
-    # The database user
     string user;
-    # The database user password
     string password;
-    # The database name
     string database;
-    # The database port
     int port;
 |};
 
@@ -24,21 +18,13 @@ configurable DatabaseConfig dbConfig = ?;
 
 final mysql:Client forumDbClient = check new (...dbConfig);
 
-# Sentiment endpoint related configurations
 type SentimentEndpointConfig record {|
-    # The endpoint URL
     string endpointUrl;
-    # The retry interval
     decimal retryInterval;
-    # The authentication configuration
     record {|
-        # The refresh URL
         string refreshUrl;
-        # The client ID
         string clientId;
-        # The client secret
         string clientSecret;
-        # The refresh token
         string refreshToken;
     |} authConfig;
 |};
@@ -66,15 +52,10 @@ final http:Client sentimentClient = check new (sentimentEpConfig.endpointUrl,
 
 final nats:Client natsClient = check new (url = nats:DEFAULT_URL);
 
-# Gmail related configurations
 type GmailAuthConfig record {|
-    # The refresh URL
     string refreshUrl = gmail:REFRESH_URL;
-    # The refresh token
     string refreshToken;
-    # The client ID
     string clientId;
-    # The client secret
     string clientSecret;
 |};
 
