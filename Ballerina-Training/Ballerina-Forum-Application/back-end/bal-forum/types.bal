@@ -43,7 +43,6 @@ type ForumPostInDatabase record {|
     string description;
     string id;
     string likes;
-    string comments;
     time:Civil postedAt;
 |};
 
@@ -64,6 +63,14 @@ type NewPostComment record {|
 
 type PostComment record {|
     string id;
+    string username;
+    string comment;
+    time:Civil postedAt;
+|};
+
+type PostCommentInDatabase record {|
+    string id;
+    string postId;
     string username;
     string comment;
     time:Civil postedAt;

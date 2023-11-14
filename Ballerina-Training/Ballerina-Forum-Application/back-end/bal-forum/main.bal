@@ -93,10 +93,11 @@ service /api on new http:Listener(port) {
         `);
 
         User user = check transformUserFromDatabase(userDb);
-        ForumPost post = check createPostFromNewPost(newPost, user.name);
+        ForumPostInDatabase post = check createPostFromNewPost(newPost, user.name);
+        
         transaction {
             _ = check forumDbClient->execute(`
-            INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes.toJsonString()}, ${post.comments.toJsonString()}, ${post.postedAt})
+            INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes}, ${post.postedAt})
         `);
 
             user.subscribtions.push(post.id);
@@ -117,7 +118,7 @@ service /api on new http:Listener(port) {
     resource function get posts() returns ForumPost[]|error {
         stream<ForumPostInDatabase, sql:Error?> postStream = forumDbClient->query(`SELECT * FROM posts`);
         ForumPost[] posts = check from var post in postStream
-            select check transformPostFromDatabase(post);
+            select check transformPostFromDatabase(post, check getCommentsForPost(post.id));
         return posts;
     }
 
@@ -132,7 +133,7 @@ service /api on new http:Listener(port) {
             return postNotFound;
         }
 
-        ForumPost post = check transformPostFromDatabase(postDb);
+        ForumPost post = check transformPostFromDatabase(postDb, []);
         if post.likes.indexOf(like.userId) is int {
             Conflict alreadyLiked = {
                 body: {
@@ -163,7 +164,7 @@ service /api on new http:Listener(port) {
                 }
             };
         }
-        return transformPostFromDatabase(postDb);
+        return transformPostFromDatabase(postDb, check getCommentsForPost(id));
     }
 
     resource function post posts/[string id]/comments(NewPostComment newComment) returns Created|NotFound|error {
@@ -176,16 +177,12 @@ service /api on new http:Listener(port) {
             };
         }
 
-        ForumPost post = check transformPostFromDatabase(postDb);
-        PostComment comment = check createCommentFromNewComment(newComment);
+        PostCommentInDatabase comment = check createCommentFromNewComment(newComment, id);        _ = check forumDbClient->execute(`
+            INSERT INTO comments VALUES (${comment.id}, ${comment.postId}, ${comment.username}, ${comment.comment}, ${comment.postedAt})
+        `);
 
-        post.comments.push(comment);
-        _ = check forumDbClient->execute(`
-                UPDATE posts SET comments = ${post.comments.toJsonString()} WHERE id = ${id}
-            `);
-
-        if post.username != newComment.username {
-            _ = start sendNatsNotification(id, newComment.username, post.title);
+        if postDb.username != newComment.username {
+            _ = start sendNatsNotification(id, newComment.username, postDb.title);
         }
 
         return {
@@ -203,9 +200,16 @@ function sendEmailNotification(UserRegistration user) returns error? {
     _ = check task:scheduleOneTimeJob(new EmailSenderTask(user.name, user.email), scheduleTime);
 }
 
-isolated function sendNatsNotification(string id, string commenter, string postTitle) returns error? {
+function sendNatsNotification(string id, string commenter, string postTitle) returns error? {
     _ = check natsClient->publishMessage({
         subject: id,
         content: "New comment from " + commenter + " on " + postTitle + " post"
     });
+}
+
+function getCommentsForPost(string postId) returns PostComment[]|error {
+    stream<PostCommentInDatabase, sql:Error?> commentStream = forumDbClient->query(`SELECT * FROM comments WHERE postId = ${postId}`);
+    PostComment[] comments = check from var comment in commentStream
+        select check createCommentFromDatabase(comment);
+    return comments;
 }
