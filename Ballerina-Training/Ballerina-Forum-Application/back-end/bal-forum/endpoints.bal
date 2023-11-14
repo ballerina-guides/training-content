@@ -91,7 +91,7 @@ class EmailSenderTask {
     private final string recipientName;
     private final string recipientEmail;
 
-    isolated function init(string recipientName, string recipientEmail) {
+    function init(string recipientName, string recipientEmail) {
         self.recipientName = recipientName;
         self.recipientEmail = recipientEmail;
     }

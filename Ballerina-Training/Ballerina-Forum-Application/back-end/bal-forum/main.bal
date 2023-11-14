@@ -29,7 +29,7 @@ service /api on new http:Listener(port) {
             INSERT INTO users VALUES (${id}, ${newUser.name}, ${newUser.email}, ${newUser.password}, "[]")
         `);
 
-        _ = start sendEmailNotification(newUser);
+        _ = start sendEmailNotification(newUser.clone());
 
         return {
             body: {
@@ -95,8 +95,8 @@ service /api on new http:Listener(port) {
         ForumPost post = check createPostFromNewPost(newPost, user.name);
         transaction {
             _ = check forumDbClient->execute(`
-                INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes.toJsonString()}, ${post.comments.toJsonString()}, ${post.postedAt})
-            `);
+            INSERT INTO posts VALUES (${post.id}, ${post.title}, ${post.description}, ${post.username}, ${post.likes.toJsonString()}, ${post.comments.toJsonString()}, ${post.postedAt})
+        `);
 
             user.subscribtions.push(post.id);
             _ = check forumDbClient->execute(`
@@ -195,7 +195,7 @@ service /api on new http:Listener(port) {
     }
 }
 
-isolated function sendEmailNotification(UserRegistration user) returns error? {
+function sendEmailNotification(UserRegistration user) returns error? {
     time:Utc scheduleTimeUtc = time:utcAddSeconds(time:utcNow(), 30);
     time:Civil scheduleTime = time:utcToCivil(scheduleTimeUtc);
 
