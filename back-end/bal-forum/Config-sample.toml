@@ -1,0 +1,6 @@
+[dbConfig]
+host = "HOST"
+user = "USER"
+password = "PASSWORD"
+database = "DATABASE"
+port = 0
