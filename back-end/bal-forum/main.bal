@@ -77,7 +77,51 @@ service /api on new http:Listener(4000) {
             }
         };
     }
+
+    resource function post posts/[string id]/likes(LikePost req) returns PostLiked|PostNotFound|PostAlreadyLiked|error {
+        ForumPostInDB|error forumPost = check forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        if forumPost is error {
+            return <PostNotFound> {
+                body: {
+                    error_message: "Post not found"
+                }
+            };
+        }
+
+        string[] likes = check forumPost.likes.fromJsonStringWithType();
+        if likes.indexOf(req.userId) != () {
+            return <PostAlreadyLiked>{
+                body: {
+                    error_message: "Already liked"
+                }
+            };
+        }
+
+        likes.push(req.userId);
+        _ = check forumDBClient->execute(`UPDATE posts SET likes = ${likes.toJsonString()} WHERE id = ${id}`);
+
+        return {
+            body: {
+                message: "Post liked successfully"
+            }
+        };
+    }
 }
+
+type PostAlreadyLiked record {|
+    *http:Conflict;
+    FailureResponse body;
+|};
+
+type PostNotFound record {|
+    *http:NotFound;
+    FailureResponse body;
+|};
+
+type PostLiked record {|
+    *http:Ok;
+    SuccessResponse body;
+|};
 
 type UserNotFound record {|
     *http:NotFound;
