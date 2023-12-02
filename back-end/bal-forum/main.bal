@@ -106,7 +106,35 @@ service /api on new http:Listener(4000) {
             }
         };
     }
+
+    resource function post posts/[string id]/comments(NewPostComment newComment) returns CommentAdded|PostNotFound|error {
+        ForumPostInDB|error forumPost = check forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        if forumPost is error {
+            return {
+                body: {
+                    error_message: "Post not found"
+                }
+            };
+        }
+
+        PostCommentInDB comment = check createPostCommentInDB(id, newComment);
+        _ = check forumDBClient->execute(`
+            INSERT INTO comments 
+            VALUES (${comment.id}, ${comment.post_id}, ${comment.user_id}, ${comment.comment}, ${comment.posted_at})
+        `);
+
+        return {
+            body: {
+                message: "Comment created successfully"
+            }
+        };
+    }
 }
+
+type CommentAdded record {|
+    *http:Ok;
+    SuccessResponse body;
+|};
 
 type PostAlreadyLiked record {|
     *http:Conflict;

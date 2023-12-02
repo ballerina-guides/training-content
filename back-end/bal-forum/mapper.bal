@@ -9,3 +9,11 @@ function createForumPostInDB(string userId, NewForumPost newForumPost) returns F
     posted_at: check time:civilFromString(newForumPost.timestamp),
     likes: "[]"
 };
+
+function createPostCommentInDB(string postId, NewPostComment newPostComment) returns PostCommentInDB|error => {
+    id: uuid:createType1AsString(),
+    user_id: newPostComment.userId,
+    post_id: postId,
+    comment: newPostComment.comment,
+    posted_at: check time:civilFromString(newPostComment.timestamp)
+};
