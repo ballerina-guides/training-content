@@ -1,4 +1,5 @@
 import ballerina/time;
+
 type UserRegistration record {
     string name;
     string email;
@@ -36,4 +37,8 @@ type ForumPostInDB record {
     string description;
     time:Civil posted_at;
     string likes = "[]";
+};
+
+type LikePost record {
+    string userId;
 };
