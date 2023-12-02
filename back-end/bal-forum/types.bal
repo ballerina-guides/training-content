@@ -42,3 +42,17 @@ type ForumPostInDB record {
 type LikePost record {
     string userId;
 };
+
+type NewPostComment record {
+    string userId;
+    string comment;
+    string timestamp;
+};
+
+type PostCommentInDB record {
+    string id;
+    string post_id;
+    string user_id;
+    string comment;
+    time:Civil posted_at;
+};
