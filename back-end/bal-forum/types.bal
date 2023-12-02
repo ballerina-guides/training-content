@@ -11,3 +11,13 @@ type SuccessResponse record {
 type FailureResponse record {
     string error_message;
 };
+
+type UserCredentials record {
+    string name;
+    string password;
+};
+
+type UserLogin record {
+    string message;
+    string id;
+};
