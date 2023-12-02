@@ -56,21 +56,21 @@ Following is the entity relationship diagram:
 
 ![Entity Relationship Diagram](images/bal-forum-erd.png)
 
-## Task 1 - Implement registration and login resources
+## Task 2 - Implement forum post related resources
 
-### Task 1.1 - Implement Registration resource
+### Task 2.1 - Post creation resource
 
-- Path: `api/users`
-  
+- Path: `api/users/{id}/posts`
+
 - Method: `POST`
-  
+
 - Request body:
-  
+
   ```json
   {
-    "name": "david",
-    "email": "david@gmail.com",
-    "password": "*******"
+    "title": "This is a sample title",
+    "description": "This is a sample description",
+    "timestamp": "2023-12-03T10:15:30.00Z"
   }
   ```
 
@@ -78,7 +78,47 @@ Following is the entity relationship diagram:
 
   ```json
   {
-    "message": "User created successfully"
+    "message": "Post created successfully"
+  }
+  ```
+
+- Failure response - `404 NOT FOUND`:
+
+  ```json
+  {
+    "error_message": "User not found"
+  }
+  ```
+
+> **Note:** The above new post request should be mapped to a `Post` record in the posts table.
+
+### Task 2.2 - Post like resource
+
+- Path: `api/posts/{id}/likes`
+
+- Method: `POST`
+
+- Request body:
+
+  ```json
+  {
+    "userId": "01ee82c7-1526-1530-b3d7-89902934ab7a"
+  }
+  ```
+
+- Success response - `200 OK`:
+
+  ```json
+  {
+    "message": "Post liked successfully"
+  }
+  ```
+
+- Failure response - `404 NOT FOUND`:
+
+  ```json
+  {
+    "error_message": "Post not found"
   }
   ```
 
@@ -86,38 +126,134 @@ Following is the entity relationship diagram:
 
   ```json
   {
-    "error_message": "User already exists"
+    "error_message": "User already liked the post"
   }
   ```
 
-### Task 1.2 - Login resource
+### Task 2.3 - Post comment resource
 
-- Path: `api/login`
+- Path: `api/posts/{id}/comments`
 
 - Method: `POST`
 
 - Request body:
 
-   ```json
-   {
-     "name": "string",
-     "password": "string"
-   }
-   ```
+  ```json
+  {
+    "userId": "01ee82c7-1526-1530-b3d7-89902934ab7a",
+    "comment": "This is a sample comment",
+    "timestamp": "2023-12-03T10:15:30.00Z"
+  }
+  ```
+
+- Success response - `200 OK`:
+
+  ```json
+  {
+    "message": "Comment added successfully"
+  }
+  ```
+
+- Failure response - `404 NOT FOUND`:
+
+  ```json
+  {
+    "error_message": "Post not found"
+  }
+  ```
+
+### Task 2.4 - Specific post retrieval resource
+
+- Path: `api/posts/{id}`
+
+- Method: `GET`
 
 - Success Response - `200 OK`:
 
-   ```json
-   {
-     "message": "Login successful",
-     "id": "01ee82c7-1526-1530-b3d7-89902934ab7a"
-   }
-   ```
+  ```json
+  {
+    "title": "This is a sample title",
+    "description": "This is a sample description",
+    "username": "John",
+    "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
+    "likes": [
+      "01ee82c7-1526-1530-b3d7-89902934ab7a"
+    ],
+    "comments": [
+      {
+        "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
+        "username": "David",
+        "comment": "This is a sample comment",
+        "postedAt": {
+          "year": 2023,
+          "month": 12,
+          "day": 3,
+          "hour": 10,
+          "minute": 15
+        }
+      }
+    ],
+    "postedAt": {
+      "year": 2023,
+      "month": 12,
+      "day": 3,
+      "hour": 8,
+      "minute": 10
+    }
+  }
+  ```
 
-- Failure Response - `401 UNAUTHORIZED`:
+- Failure response - `404 NOT FOUND`:
 
-   ```json
-   {
-     "error_message": "Invalid credentials"
-   }
-   ```
+  ```json
+  {
+    "error_message": "Post not found"
+  }
+  ```
+
+> **Note:** The response should have the name of the user(in the post and comments) rather than the user id stored in the database.
+
+### Task 2.5 - Posts retrieval resource
+
+- Path: `api/posts`
+
+- Method: `GET`
+
+- Success Response - `200 OK`:
+
+  ```json
+  [
+    {
+      "title": "This is a sample title",
+      "description": "This is a sample description",
+      "username": "John",
+      "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
+      "likes": [
+        "01ee82c7-1526-1530-b3d7-89902934ab7a"
+      ],
+      "comments": [
+        {
+          "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
+          "username": "David",
+          "comment": "This is a sample comment",
+          "postedAt": {
+            "year": 2023,
+            "month": 12,
+            "day": 3,
+            "hour": 10,
+            "minute": 15
+          }
+        }
+      ],
+      "postedAt": {
+        "year": 2023,
+        "month": 12,
+        "day": 3,
+        "hour": 8,
+        "minute": 10
+      }
+    }
+  ]
+  ```
+
+> **Note:** The response should have the name of the user(in the posts and comments) rather than the user id stored in the database.
