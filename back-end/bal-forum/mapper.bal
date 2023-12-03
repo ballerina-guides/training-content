@@ -1,5 +1,5 @@
-import ballerina/uuid;
 import ballerina/time;
+import ballerina/uuid;
 
 function createForumPostInDB(string userId, NewForumPost newForumPost) returns ForumPostInDB|error => {
     id: uuid:createType1AsString(),
@@ -16,4 +16,11 @@ function createPostCommentInDB(string postId, NewPostComment newPostComment) ret
     post_id: postId,
     comment: newPostComment.comment,
     posted_at: check time:civilFromString(newPostComment.timestamp)
+};
+
+function createPostComment(PostCommentInDB postCommentInDB) returns PostComment|error => {
+    id: postCommentInDB.id,
+    username: check postCommentInDB["name"].ensureType(),
+    comment: postCommentInDB.comment,
+    postedAt: postCommentInDB.posted_at
 };
