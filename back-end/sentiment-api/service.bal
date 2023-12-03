@@ -13,6 +13,23 @@ listener http:Listener sentiment_ls = new (9000,
     }
 );
 
+configurable string oauth2IntrospectionUrl = ?;
+
+@http:ServiceConfig {
+    auth: [
+        {
+            oauth2IntrospectionConfig: {
+                url: oauth2IntrospectionUrl,
+                clientConfig: {
+                    customHeaders: {"Authorization": "Basic YWRtaW46YWRtaW4="},
+                    secureSocket: {
+                        cert: "resources/sts_server_public.crt"
+                    }
+                }
+            }
+        }
+    ]
+}
 service /text\-processing on sentiment_ls {
 
     public function init() {
