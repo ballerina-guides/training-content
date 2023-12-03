@@ -56,45 +56,13 @@ Following is the entity relationship diagram:
 
 ![Entity Relationship Diagram](images/bal-forum-erd.png)
 
-## Task 2 - Implement forum post related resources
+## Task 3 - Verify the post content with the sentiment analysis service
 
-### Task 2.1 - Post creation resource
+The mock sentiment analysis service written in Ballerina is available in the `backend/sentiment-api` directory. The service exposes a single resource, which accepts a string and returns a sentiment score.
 
-- Path: `api/users/{id}/posts`
+- Port: `9000`
 
-- Method: `POST`
-
-- Request body:
-
-  ```json
-  {
-    "title": "This is a sample title",
-    "description": "This is a sample description",
-    "timestamp": "2023-12-03T10:15:30.00Z"
-  }
-  ```
-
-- Success response - `201 CREATED`:
-
-  ```json
-  {
-    "message": "Post created successfully"
-  }
-  ```
-
-- Failure response - `404 NOT FOUND`:
-
-  ```json
-  {
-    "error_message": "User not found"
-  }
-  ```
-
-> **Note:** The above new post request should be mapped to a `Post` record in the posts table.
-
-### Task 2.2 - Post like resource
-
-- Path: `api/posts/{id}/likes`
+- Path: `/text-processing/api/sentiment`
 
 - Method: `POST`
 
@@ -102,7 +70,7 @@ Following is the entity relationship diagram:
 
   ```json
   {
-    "userId": "01ee82c7-1526-1530-b3d7-89902934ab7a"
+    "text": "This is a sample text"
   }
   ```
 
@@ -110,150 +78,60 @@ Following is the entity relationship diagram:
 
   ```json
   {
-    "message": "Post liked successfully"
+    "probability": { 
+      "neg": 0.30135019761690551, 
+      "neutral": 0.27119050546800266, 
+      "pos": 0.69864980238309449
+    }, 
+    "label": "pos"
   }
   ```
 
-- Failure response - `404 NOT FOUND`:
+The label can be one of the following values:
+
+- `pos` - Positive sentiment
+- `neg` - Negative sentiment
+- `neutral` - Neutral sentiment
+
+Pass the post tiltle and description to the sentiment analysis service and verify the sentiment score. If the label is `neg`, then the post is forbidden.
+
+- Rejected response - `403 FORBIDDEN`:
 
   ```json
   {
-    "error_message": "Post not found"
+    "error_message": "Post contains negative sentiment"
   }
   ```
 
-- Failure response - `409 CONFLICT`:
+### Task 3.1 - Connect to the sentiment analysis service without SSL
 
-  ```json
-  {
-    "error_message": "User already liked the post"
-  }
-  ```
+The sentiment analysis service is not secured with SSL. Therefore, you can connect to it without SSL. Use an [HTTP client](https://ballerina.io/learn/by-example/http-client-send-request-receive-response/) to connect to the sentiment analysis service.
 
-### Task 2.3 - Post comment resource
+### Task 3.2 - Secure the sentiment analysis service with SSL and connect to it
 
-- Path: `api/posts/{id}/comments`
+[Secure the sentiment analysis service with SSL](https://ballerina.io/learn/by-example/http-service-ssl-tls/) and connect to it. Use an [HTTP client secured with SSL](https://ballerina.io/learn/by-example/http-client-ssl-tls/) to connect to the sentiment analysis service.
 
-- Method: `POST`
+> **Note:** For testing purpose you can use the self-signed certificates provided in the `resources` directory of each service.
 
-- Request body:
+### Task 3.3 - Secure the sentiment analysis service with mutual SSL and connect to it
 
-  ```json
-  {
-    "userId": "01ee82c7-1526-1530-b3d7-89902934ab7a",
-    "comment": "This is a sample comment",
-    "timestamp": "2023-12-03T10:15:30.00Z"
-  }
-  ```
+[Secure the sentiment analysis service with mutual SSL](https://ballerina.io/learn/by-example/http-service-mutual-ssl/) and connect to it. Use an [HTTP client secured with mutual SSL](https://ballerina.io/learn/by-example/http-client-mutual-ssl/) to connect to the sentiment analysis service.
 
-- Success response - `200 OK`:
+> **Note:** For testing purpose you can use the self-signed certificates provided in the `resources` directory of each service.
 
-  ```json
-  {
-    "message": "Comment added successfully"
-  }
-  ```
+### Task 3.4 - Secure the sentiment analysis service with OAuth2 and connect to it
 
-- Failure response - `404 NOT FOUND`:
+[Secure the sentiment analysis service with OAuth2](https://ballerina.io/learn/by-example/http-service-oauth2/) and connect to it. Use an [HTTP client secured with OAuth2 refresh token grant type](https://ballerina.io/learn/by-example/http-client-oauth2-refresh-token-grant-type/) to connect to the sentiment analysis service.
 
-  ```json
-  {
-    "error_message": "Post not found"
-  }
-  ```
+Connect to the mock STS endpoint is available through docker compose. The endpoint deatils are as follows:
 
-### Task 2.4 - Specific post retrieval resource
+| Property                                             | Value                                       |
+|------------------------------------------------------|---------------------------------------------|
+| Introspection Endpoint                               | `https://localhost:9445/oauth2/introspect`  |
+| Authorization header for introspection (admin:admin) | `"Authorization": "Basic YWRtaW46YWRtaW4="` |
+| Refresh Endpoint                                     | `https://localhost:9445/oauth2/token`       |
+| Client ID                                            | `FlfJYKBD2c925h4lkycqNZlC2l4a`              |
+| Client Secret                                        | `PJz0UhTJMrHOo68QQNpvnqAY_3Aa`              |
+| Refresh Token                                        | `24f19603-8565-4b5f-a036-88a945e1f272`      |
 
-- Path: `api/posts/{id}`
-
-- Method: `GET`
-
-- Success Response - `200 OK`:
-
-  ```json
-  {
-    "title": "This is a sample title",
-    "description": "This is a sample description",
-    "username": "John",
-    "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
-    "likes": [
-      "01ee82c7-1526-1530-b3d7-89902934ab7a"
-    ],
-    "comments": [
-      {
-        "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
-        "username": "David",
-        "comment": "This is a sample comment",
-        "postedAt": {
-          "year": 2023,
-          "month": 12,
-          "day": 3,
-          "hour": 10,
-          "minute": 15
-        }
-      }
-    ],
-    "postedAt": {
-      "year": 2023,
-      "month": 12,
-      "day": 3,
-      "hour": 8,
-      "minute": 10
-    }
-  }
-  ```
-
-- Failure response - `404 NOT FOUND`:
-
-  ```json
-  {
-    "error_message": "Post not found"
-  }
-  ```
-
-> **Note:** The response should have the name of the user(in the post and comments) rather than the user id stored in the database.
-
-### Task 2.5 - Posts retrieval resource
-
-- Path: `api/posts`
-
-- Method: `GET`
-
-- Success Response - `200 OK`:
-
-  ```json
-  [
-    {
-      "title": "This is a sample title",
-      "description": "This is a sample description",
-      "username": "John",
-      "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
-      "likes": [
-        "01ee82c7-1526-1530-b3d7-89902934ab7a"
-      ],
-      "comments": [
-        {
-          "id": "01ee82c7-1526-1530-b3d7-89902934ab7a",
-          "username": "David",
-          "comment": "This is a sample comment",
-          "postedAt": {
-            "year": 2023,
-            "month": 12,
-            "day": 3,
-            "hour": 10,
-            "minute": 15
-          }
-        }
-      ],
-      "postedAt": {
-        "year": 2023,
-        "month": 12,
-        "day": 3,
-        "hour": 8,
-        "minute": 10
-      }
-    }
-  ]
-  ```
-
-> **Note:** The response should have the name of the user(in the posts and comments) rather than the user id stored in the database.
+> **Note:** The mock STS endpoint is secured with SSL and the self-signed public certificate of the STS service is given in the `resources` directory.
