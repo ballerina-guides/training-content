@@ -1,0 +1,12 @@
+[container.image]
+repository="wso2"
+name="sentiment-api"
+tag="0.1.0"
+
+[[container.copy.files]]
+sourceFile="./Config.toml"
+target="./Config.toml"
+
+[[container.copy.files]]
+sourceFile="./resources"
+target="./resources"
