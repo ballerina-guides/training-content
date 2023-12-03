@@ -129,6 +129,23 @@ service /api on new http:Listener(4000) {
             }
         };
     }
+
+    resource function get posts/[string id]() returns ForumPost|PostNotFound|error {
+        ForumPostInDB|error forumPost = check forumDBClient->queryRow(`
+            SELECT posts.*, users.name 
+            FROM posts INNER JOIN users ON posts.user_id = users.id 
+            WHERE posts.id = ${id}
+        `);
+        if forumPost is error {
+            return {
+                body: {
+                    error_message: "Post not found"
+                }
+            };
+        }
+
+        return getForumPost(forumPost);
+    }
 }
 
 type CommentAdded record {|
