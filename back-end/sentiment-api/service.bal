@@ -1,6 +1,8 @@
 import ballerina/http;
 import ballerina/log;
 
+isolated boolean availability = false;
+
 listener http:Listener sentiment_ls = new (9000,
     secureSocket = {
         'key: {
@@ -38,14 +40,21 @@ service /text\-processing on sentiment_ls {
 
     isolated resource function post api/sentiment(Post post) returns Sentiment|http:ServiceUnavailable {
         // Return a dummy response
-        return {
-            probability: {
-                neg: 0.30135019761690551,
-                neutral: 0.27119050546800266,
-                pos: 0.69864980238309449
-            },
-            label: POSITIVE
-        };
+        lock {
+            if availability {
+                availability = false;
+                return {
+                    probability: {
+                        neg: 0.30135019761690551,
+                        neutral: 0.27119050546800266,
+                        pos: 0.69864980238309449
+                    },
+                    label: POSITIVE
+                };
+            }
+            availability = true;
+            return http:SERVICE_UNAVAILABLE;
+        }
     }
 }
 
