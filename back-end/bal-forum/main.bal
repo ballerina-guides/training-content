@@ -53,13 +53,22 @@ service /api on new http:Listener(4000) {
         };
     }
 
-    resource function post users/[string id]/posts(NewForumPost newPost) returns PostCreated|UserNotFound|error {
+    resource function post users/[string id]/posts(NewForumPost newPost) returns PostCreated|UserNotFound|PostForbidden|error {
         string|error userId = forumDBClient->queryRow(`SELECT id FROM users WHERE id = ${id}`);
 
         if userId is error {
-            return {
+            return <UserNotFound>{
                 body: {
                     error_message: "User not found"
+                }
+            };
+        }
+
+        Sentiment sentiment = check sentimentClient->/api/sentiment.post({text: newPost.title + " " + newPost.description});
+        if sentiment.label != "pos" {
+            return <PostForbidden>{
+                body: {
+                    error_message: "Post is forbidden due to negative sentiment"
                 }
             };
         }
@@ -81,7 +90,7 @@ service /api on new http:Listener(4000) {
     resource function post posts/[string id]/likes(LikePost req) returns PostLiked|PostNotFound|PostAlreadyLiked|error {
         ForumPostInDB|error forumPost = check forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
         if forumPost is error {
-            return <PostNotFound> {
+            return <PostNotFound>{
                 body: {
                     error_message: "Post not found"
                 }
@@ -158,6 +167,11 @@ service /api on new http:Listener(4000) {
         return forumPosts;
     }
 }
+
+type PostForbidden record {|
+    *http:Forbidden;
+    FailureResponse body;
+|};
 
 type CommentAdded record {|
     *http:Ok;
