@@ -16,4 +16,8 @@ final mysql:Client forumDBClient = check new (...dbConfig);
 
 configurable string sentimentClientUrl = ?;
 
-final http:Client sentimentClient = check new (sentimentClientUrl);
+final http:Client sentimentClient = check new (sentimentClientUrl,
+    secureSocket = {
+        cert: "resources/server_public.crt"
+    }
+);
