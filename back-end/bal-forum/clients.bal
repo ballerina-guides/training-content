@@ -18,6 +18,10 @@ configurable string sentimentClientUrl = ?;
 
 final http:Client sentimentClient = check new (sentimentClientUrl,
     secureSocket = {
-        cert: "resources/server_public.crt"
+        cert: "resources/server_public.crt",
+        'key: {
+            certFile: "resources/client_public.crt",
+            keyFile: "resources/client_private.key"
+        }
     }
 );
