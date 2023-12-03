@@ -17,3 +17,10 @@ services:
         retries: 10
     volumes:
       - "./db-setup/init.sql:/docker-entrypoint-initdb.d/1.sql"
+
+  sts:
+    image: ldclakmal/ballerina-sts:latest
+    ports:
+      - "9445:9445"
+    network_mode: "host"
+    platform: linux/amd64
