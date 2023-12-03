@@ -42,5 +42,10 @@ final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
                 cert: "resources/sts_server_public.crt"
             }
         }
+    },
+    retryConfig = {
+        interval: 1,
+        count: 3,
+        statusCodes: [503]
     }
 );
