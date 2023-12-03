@@ -14,14 +14,33 @@ configurable DBConfig dbConfig = ?;
 
 final mysql:Client forumDBClient = check new (...dbConfig);
 
-configurable string sentimentClientUrl = ?;
+configurable SentimentClientConfig sentimentClientConfig = ?;
 
-final http:Client sentimentClient = check new (sentimentClientUrl,
+type SentimentClientConfig record {|
+    string clientUrl;
+    string refreshUrl;
+    string refreshToken;
+    string clientId;
+    string clientSecret;
+|};
+
+final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
     secureSocket = {
         cert: "resources/server_public.crt",
         'key: {
             certFile: "resources/client_public.crt",
             keyFile: "resources/client_private.key"
+        }
+    },
+    auth = {
+        refreshUrl: sentimentClientConfig.refreshUrl,
+        refreshToken: sentimentClientConfig.refreshToken,
+        clientId: sentimentClientConfig.clientId,
+        clientSecret: sentimentClientConfig.clientSecret,
+        clientConfig: {
+            secureSocket: {
+                cert: "resources/sts_server_public.crt"
+            }
         }
     }
 );
