@@ -36,7 +36,7 @@ type ForumPostInDB record {
     string title;
     string description;
     time:Civil posted_at;
-    string likes = "[]";
+    string likes;
 };
 
 type LikePost record {
@@ -55,4 +55,21 @@ type PostCommentInDB record {
     string user_id;
     string comment;
     time:Civil posted_at;
+};
+
+type PostComment record {
+    string id;
+    string username;
+    string comment;
+    time:Civil postedAt;
+};
+
+type ForumPost record {
+    string title;
+    string description;
+    string username;
+    string id;
+    string[] likes;
+    PostComment[] comments;
+    time:Civil postedAt;
 };
