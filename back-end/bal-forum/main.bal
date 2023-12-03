@@ -146,6 +146,17 @@ service /api on new http:Listener(4000) {
 
         return getForumPost(forumPost);
     }
+
+    resource function get posts() returns ForumPost[]|error {
+        stream<ForumPostInDB, error?> forumPostStream = forumDBClient->query(`
+            SELECT posts.*, users.name 
+            FROM posts INNER JOIN users ON posts.user_id = users.id
+        `);
+        ForumPost[] forumPosts = check from ForumPostInDB forumPost in forumPostStream
+            select check getForumPost(forumPost);
+
+        return forumPosts;
+    }
 }
 
 type CommentAdded record {|
