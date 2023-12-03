@@ -1,5 +1,6 @@
 import ballerina/http;
 import ballerina/uuid;
+import ballerina/log;
 
 @http:ServiceConfig {
     cors: {
@@ -7,6 +8,11 @@ import ballerina/uuid;
     }
 }
 service /api on new http:Listener(4000) {
+
+    public function init() {
+        log:printInfo("Ballina Forum Service started");
+    }
+
     resource function post users(UserRegistration newUser) returns UserCreated|UserAlreadyExist|error {
         string|error id = forumDBClient->queryRow(`SELECT id FROM users WHERE name = ${newUser.name}`);
 

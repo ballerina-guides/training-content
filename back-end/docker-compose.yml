@@ -24,3 +24,27 @@ services:
       - "9445:9445"
     network_mode: "host"
     platform: linux/amd64
+
+  sentiment-api:
+    image: wso2/sentiment-api:0.1.0
+    ports:
+      - "9000:9000"
+    network_mode: "host"
+    platform: linux/amd64
+    depends_on:
+      sts:
+        condition: service_started
+
+  bal-forum:
+    image: wso2/bal-forum:0.1.0
+    ports:
+      - "4000:4000"
+    network_mode: "host"
+    platform: linux/amd64
+    depends_on:
+      sentiment-api:
+        condition: service_started
+      sts:
+        condition: service_started
+      mysql:
+        condition: service_healthy
