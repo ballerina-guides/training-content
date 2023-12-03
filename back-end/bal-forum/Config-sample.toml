@@ -1,3 +1,5 @@
+sentimentClientUrl = "SENTIMENT_CLIENT_URL"
+
 [dbConfig]
 host = "HOST"
 user = "USER"

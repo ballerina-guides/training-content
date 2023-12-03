@@ -73,3 +73,12 @@ type ForumPost record {
     PostComment[] comments;
     time:Civil postedAt;
 };
+
+type Sentiment record {
+    record {
+        decimal neg;
+        decimal neutral;
+        decimal pos;
+    } probability;
+    string label;
+};
