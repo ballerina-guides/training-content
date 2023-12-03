@@ -56,15 +56,8 @@ Following is the entity relationship diagram:
 
 ![Entity Relationship Diagram](images/bal-forum-erd.png)
 
-## Task 4 - Make the sentiment analysis client resilient
+## Task 5 - Deploy and test the services using Docker
 
-The sentiment analysis service is not reliable. It goes down frequently and return `503 - Service Unavailable`. We need to make the client resilient to handle such failures.
+Build the docker images for the `bal-forum` and the `sentiment-api` services and run them using docker compose. The docker compose file is available in the `backend` directory.
 
-The Ballerina HTTP client supports the following resiliency features:
-
-- [Retry](https://ballerina.io/learn/by-example/http-retry/)
-- [Circuit Breaker](https://ballerina.io/learn/by-example/http-circuit-breaker/)
-- [Load Balancer](https://ballerina.io/learn/by-example/http-load-balancer/)
-- [Failover](https://ballerina.io/learn/by-example/http-failover/)
-
-Make the sentiment analysis client resilient by retrying the request for 3 times with a delay of 1 second between each retry.
+> **Tip:** Refer to the [Ballerina Code to Cloud guide](https://ballerina.io/learn/code-to-cloud-deployment/) for more information on deploying Ballerina services as docker images.
