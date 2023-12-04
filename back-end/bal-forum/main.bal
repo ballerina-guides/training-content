@@ -32,6 +32,8 @@ service /api on new http:Listener(4000) {
             VALUES (${userId}, ${newUser.name}, ${newUser.email}, ${newUser.password})
         `);
 
+        _ = start sendNatsMessage(newUser.email);
+
         return {
             body: {
                 message: "User created successfully"

@@ -82,3 +82,7 @@ type Sentiment record {
     } probability;
     string label;
 };
+
+type RegisterEvent record {
+    string email;
+};

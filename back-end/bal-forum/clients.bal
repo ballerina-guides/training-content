@@ -1,6 +1,7 @@
 import ballerina/http;
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
+import ballerinax/nats;
 
 type DBConfig record {|
     string host;
@@ -49,3 +50,5 @@ final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
         statusCodes: [503]
     }
 );
+
+final nats:Client natsClient = check new (nats:DEFAULT_URL);
