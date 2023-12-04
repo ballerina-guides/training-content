@@ -58,37 +58,16 @@ This training will extend the Ballerina Forum application with the following fea
 
 ![Component Diagram](images/bal-forum.png)
 
-## Task 1 - Schedule a one-time task to create a new forum post
+## Task 2 - Produce a NATS event when a new user is registered
 
-The Post creation resource can now accept a query parameter named `schedule` which specify the timestamp to schedule the post creation. This query parameter is **optional** and if not provided, the post will be created immediately.
+When a new user is registered, a NATS event should be produced to the subject `ballerina.forum.new.user` with the following payload:
 
-Example:
+```json
+{
+  "email": "john@gmail.com"
+} 
+```
 
-- Request URL : `http://localhost:4000/api/users/1/posts?schedule=2023-12-08T10:00:00Z`
-- Request Body :
+> **Note:** For testing, the NATS server can be started using the docker-compose. Connect the NATS client to `nats://localhost:4222`.
 
-  ```json
-  {
-    "title": "This is a sample title",
-    "description": "This is a sample description",
-    "timestamp": "2023-12-05T10:15:30.00Z"
-  }
-  ```
-
-- SuccessResponse - `202 Accepted`:
-
-  ```json
-  {
-    "message": "Post creation scheduled successfully"
-  }
-  ```
-
-- FailureResponse - `400 Bad Request`:
-
-  ```json
-  {
-    "message": "Invalid post schedule request"
-  }
-  ```
-
-> **Hint:** Refer to [Schedule one time job](https://ballerina.io/learn/by-example/task-one-time-job-execution/) example in the Ballerina by Example guide.
+> **Hint:** Refer to [NATS client - Publish message](https://ballerina.io/learn/by-example/nats-basic-pub/) example in the Ballerina by Example guide.
