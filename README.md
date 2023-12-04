@@ -79,7 +79,7 @@ Example:
   
   ```json
   {
-    message: "Post creation scheduled successfully"
+    "message": "Post creation scheduled successfully"
   }
   ```
 
@@ -87,7 +87,7 @@ Example:
   
   ```json
   {
-    message: "Invalid post schedule request"
+    "message": "Invalid post schedule request"
   }
   ```
 
