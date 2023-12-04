@@ -1,5 +1,4 @@
 import ballerina/time;
-import ballerinax/nats;
 
 type UserRegistration record {
     string name;
@@ -87,5 +86,3 @@ type Sentiment record {
 type RegisterEvent record {
     string email;
 };
-
-final nats:Client natsClient = check new (nats:DEFAULT_URL);

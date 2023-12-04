@@ -30,7 +30,7 @@ function sendGmailGreeting(RegisterEvent event) returns error? {
     }
 }
 
-service "ballerina.forum" on new nats:Listener(nats:DEFAULT_URL) {
+service "ballerina.forum.new.user" on new nats:Listener(nats:DEFAULT_URL) {
     public function init() returns error? {
         log:printInfo("Mail notifier service started");
     }

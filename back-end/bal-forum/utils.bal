@@ -56,7 +56,7 @@ function getForumPost(ForumPostInDB forumPostInDB) returns ForumPost|error {
 function sendNatsMessage(string email) {
     RegisterEvent event = {email};
     do {
-        _ = check natsClient->publishMessage({subject: "ballerina.forum", content: event});
+        _ = check natsClient->publishMessage({subject: "ballerina.forum.new.user", content: event});
     } on fail error err {
         log:printError("Error occurred while sending nats message", event = event, 'error = err);
     }
