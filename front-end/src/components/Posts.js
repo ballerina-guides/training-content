@@ -8,6 +8,7 @@ const Posts = () => {
     const [description, setDescription] = useState("");
     const [notify, setNotify] = useState(false);
     const [message, setMessage] = useState("");
+    const [schedule, setSchedule] = useState("");
     const [error, setError] = useState(false);
     const navigate = useNavigate();
 
@@ -22,6 +23,9 @@ const Posts = () => {
 
     const createPost = () => {
         let url = "http://localhost:4000/api/users/" + localStorage.getItem("_id") + "/posts";
+        if (schedule) {
+            url += "?schedule=" + encodeURIComponent(new Date(schedule).toISOString());
+        }
         fetch(url, {
             method: "POST",
             body: JSON.stringify({
@@ -34,7 +38,7 @@ const Posts = () => {
             },
         })
             .then((res) => {
-                if (res.status === 201 | res.status === 403 | res.status === 404) {
+                if (res.status === 201 | res.status === 403 | res.status === 404 | res.status === 400 | res.status === 202) {
                     return res.json();
                 }
                 throw new Error("Something went wrong", res.json());
@@ -61,6 +65,7 @@ const Posts = () => {
         createPost();
         setTitle("");
         setDescription("");
+        setSchedule("");
     };
     const handleNotification = () => {
         setNotify(false);
@@ -95,8 +100,16 @@ const Posts = () => {
                             required
                             className='modalInput'
                         />
+                        <label htmlFor='schedule'>Schedule</label>
+                        <input
+                            type='datetime-local'
+                            value={schedule}
+                            onChange={(e) => setSchedule(e.target.value)}
+                            name='schedule'
+                            className='modalInput'
+                        />
                     </div>
-                    <button className='homeBtn'>POST</button>
+                    <button className='homeBtn'>{schedule ? 'SCHEDULE POST' : 'POST'}</button>
                 </form>
             </div>
         </div>

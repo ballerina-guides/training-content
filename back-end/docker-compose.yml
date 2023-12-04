@@ -25,6 +25,12 @@ services:
     network_mode: "host"
     platform: linux/amd64
 
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+    network_mode: "host"
+
   sentiment-api:
     image: wso2/sentiment-api:0.1.0
     ports:
@@ -33,6 +39,16 @@ services:
     platform: linux/amd64
     depends_on:
       sts:
+        condition: service_started
+
+  nats-mail-notifier:
+    image: wso2/nats-mail-notifier:0.1.0
+    ports:
+      - "4222:4222"
+    network_mode: "host"
+    platform: linux/amd64
+    depends_on:
+      nats:
         condition: service_started
 
   bal-forum:
@@ -48,3 +64,5 @@ services:
         condition: service_started
       mysql:
         condition: service_healthy
+      nats-mail-notifier:
+        condition: service_started
