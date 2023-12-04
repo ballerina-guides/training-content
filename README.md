@@ -58,16 +58,16 @@ This training will extend the Ballerina Forum application with the following fea
 
 ![Component Diagram](images/bal-forum.png)
 
-## Task 2 - Produce a NATS event when a new user is registered
+## Task 3 - Consume the above event and send an email to the user with the welcome note provided in a file
 
-When a new user is registered, a NATS event should be produced to the subject `ballerina.forum.new.user` with the following payload:
+A Ballerina NATS server is defined in the `backend/nats-mail-notifier` directory. This server is configured to consume the NATS event produced in the previous task.
 
-```json
-{
-  "email": "john@gmail.com"
-} 
-```
+Add a [Gmail connector](https://central.ballerina.io/ballerinax/googleapis.gmail/4.0.0) to send an email to the user with the welcome note provided in `resources` directory. The email should be sent to the email address provided in the NATS event payload.
 
-> **Note:** For testing, the NATS server can be started using the docker-compose. Connect the NATS client to `nats://localhost:4222`.
-
-> **Hint:** Refer to [NATS client - Publish message](https://ballerina.io/learn/by-example/nats-basic-pub/) example in the Ballerina by Example guide.
+> **Hints:**
+>
+> - Refer to the Setup Gmail API section to obtain the credentials and configure the connector.
+>
+> - Refer to the [send mails example](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/examples/send-mails/main.bal) to send an email using the Gmail connector.
+>
+> - Use [the Ballerin IO module](https://central.ballerina.io/ballerina/io/latest) to read the content of the file as string.
