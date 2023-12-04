@@ -1,4 +1,6 @@
 import ballerina/http;
+import ballerina/task;
+import ballerina/time;
 import ballerina/uuid;
 import ballerina/log;
 
@@ -59,7 +61,7 @@ service /api on new http:Listener(4000) {
         };
     }
 
-    resource function post users/[string id]/posts(NewForumPost newPost) returns PostCreated|UserNotFound|PostForbidden|error {
+    resource function post users/[string id]/posts(NewForumPost newPost, string? schedule = ()) returns PostCreated|UserNotFound|PostForbidden|PostScheduled|BadPostSchedule|error {
         string|error userId = forumDBClient->queryRow(`SELECT id FROM users WHERE id = ${id}`);
 
         if userId is error {
@@ -79,16 +81,30 @@ service /api on new http:Listener(4000) {
             };
         }
 
-        ForumPostInDB forumPost = check createForumPostInDB(id, newPost);
-        _ = check forumDBClient->execute(`
-            INSERT INTO posts 
-            VALUES (${forumPost.id}, ${forumPost.title}, ${forumPost.description}, 
-                ${forumPost.user_id}, ${forumPost.likes}, ${forumPost.posted_at})
-        `);
+        if schedule is () {
+            check createForumPost(id, newPost);
 
-        return {
+            return <PostCreated>{
+                body: {
+                    message: "Post created successfully"
+                }
+            };
+        }
+
+        do {
+            time:Civil scheduledTime = check time:civilFromString(schedule);
+            _ = check task:scheduleOneTimeJob(new CreatPostJob(id, newPost), scheduledTime);
+        } on fail {
+            return <BadPostSchedule>{
+                body: {
+                    error_message: "Invalid schedule time"
+                }
+            };
+        }
+
+        return <PostScheduled>{
             body: {
-                message: "Post created successfully"
+                message: "Post scheduled successfully"
             }
         };
     }
@@ -173,6 +189,16 @@ service /api on new http:Listener(4000) {
         return forumPosts;
     }
 }
+
+type BadPostSchedule record {|
+    *http:BadRequest;
+    FailureResponse body;
+|};
+
+type PostScheduled record {|
+    *http:Accepted;
+    SuccessResponse body;
+|};
 
 type PostForbidden record {|
     *http:Forbidden;
