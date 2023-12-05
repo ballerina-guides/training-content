@@ -25,6 +25,10 @@ type SentimentClientConfig record {|
     string clientSecret;
 |};
 
+@display {
+    label: "Sentiment Analysis Client",
+    id: "sentiment-analysis"
+}
 final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
     secureSocket = {
         cert: "resources/server_public.crt",
@@ -51,4 +55,8 @@ final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
     }
 );
 
+@display {
+    label: "NATS Notification Publisher",
+    id: "nats-notifier"
+}
 final nats:Client natsClient = check new (nats:DEFAULT_URL);

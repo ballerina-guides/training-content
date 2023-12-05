@@ -32,6 +32,10 @@ configurable string oauth2IntrospectionUrl = ?;
         }
     ]
 }
+@display {
+    label: "Sentiment Analysis Service",
+    id: "sentiment-analysis"
+}
 service /text\-processing on sentiment_ls {
 
     public function init() {

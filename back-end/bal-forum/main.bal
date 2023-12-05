@@ -9,6 +9,10 @@ import ballerina/log;
         allowOrigins: ["*"]
     }
 }
+@display {
+    label: "Bal Forum Service",
+    id: "bal-forum"
+}
 service /api on new http:Listener(4000) {
 
     public function init() {
