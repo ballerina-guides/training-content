@@ -11,7 +11,7 @@ service "ballerina.forum.new.user" on new nats:Listener(nats:DEFAULT_URL) {
     }
 
     remote function onMessage(RegisterEvent event) {
-        log:printInfo("received a new user registration event", email = event.email);;
+        log:printInfo("received a new user registration event", email = event.email);
     }
 }
 
