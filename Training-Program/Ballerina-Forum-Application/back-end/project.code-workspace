@@ -1,0 +1,13 @@
+{
+    "folders": [
+        {
+            "path": "bal-forum"
+        },
+        {
+            "path": "sentiment-api"
+        },
+        {
+            "path": "nats-mail-notifier"
+        }
+    ]
+}
