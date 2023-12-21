@@ -10,7 +10,7 @@ listener http:Listener sts = new (STS_SERVER_PORT, {
     secureSocket: {
         key: {
             certFile: "resources/sts_server_public.crt",
-            keyFile: "resources/sts_server_private.key"
+            keyFile: "tests/resources/sts_server_private.key"
         }
     }
 });

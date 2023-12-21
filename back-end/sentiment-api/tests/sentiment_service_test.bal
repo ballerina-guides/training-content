@@ -21,7 +21,7 @@ function initializeSentimentClient() returns error? {
             cert: "resources/server_public.crt",
             'key: {
                 certFile: "resources/client_public.crt",
-                keyFile: "resources/client_private.key"
+                keyFile: "tests/resources/client_private.key"
             }
         },
         auth = {
@@ -41,14 +41,18 @@ function initializeSentimentClient() returns error? {
 @test:Config {}
 function testSentimentApiWhenUnavailable() returns error? {
     Sentiment|http:Error sentiment = (<http:Client>sentimentClient)->/api/sentiment.post({text: "I am happy!"});
-    test:assertTrue(sentiment is http:Error, "sentiment response is not an error");
-    test:assertEquals((<http:Error>sentiment).message(), "Service Unavailable");
+    if sentiment is Sentiment {
+        test:assertFail("sentiment response is not an error");
+    }
+    test:assertEquals(sentiment.message(), "Service Unavailable");
 }
 
 @test:Config {dependsOn: [testSentimentApiWhenUnavailable]}
 function testSentimentApiWhenAvailable() {
     Sentiment|http:Error sentiment = (<http:Client>sentimentClient)->/api/sentiment.post({text: "I am happy!"});
-    test:assertTrue(sentiment is Sentiment, "sentiment response is an error");
+    if sentiment is http:Error {
+        test:assertFail("sentiment response is an error");
+    }
     Sentiment expectedSentiment = {
         probability: {
             neg: 0.30135019761690551,
