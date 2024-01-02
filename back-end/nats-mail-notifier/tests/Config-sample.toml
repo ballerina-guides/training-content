@@ -1,0 +1,7 @@
+adminGmail = "xxx"
+natsUrl = "nats://localhost:4222"
+
+[gmailAuthConfig]
+refreshToken = "xxx"
+clientSecret = "xxx"
+clientId = "xxx"
