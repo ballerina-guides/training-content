@@ -6,7 +6,7 @@ import ballerina/uuid;
 import ballerinax/mysql;
 import ballerinax/nats;
 
-configurable string forumServiceUrl = "http://localhost:4000/api";
+string forumServiceUrl = "http://localhost:4000/api";
 
 http:Client forumClient = check new (forumServiceUrl);
 
