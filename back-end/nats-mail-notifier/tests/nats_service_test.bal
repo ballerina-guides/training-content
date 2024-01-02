@@ -15,10 +15,7 @@ public client class MockGmailClient {
             string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
             string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns gmail:Message|error {
         string[]? to = request?.to;
-        if to is () {
-            return error("mail to: is empty");
-        }
-        if to.length() != 1 {
+        if to is () || to.length() != 1 {
             return error("mail to: is empty");
         }
         if to.pop() == "fail@gmail.com" {
