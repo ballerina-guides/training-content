@@ -10,10 +10,6 @@ configurable string forumServiceUrl = "http://localhost:4000/api";
 
 http:Client forumClient = check new (forumServiceUrl);
 
-public type Post record {
-    string text;
-};
-
 client class MockHttpClient {
     isolated resource function post [http:PathParamType... path](http:RequestMessage message, map<string|string[]>? headers = (), string?
             mediaType = (), http:TargetType targetType = http:Response, *http:QueryParams params)
