@@ -48,7 +48,7 @@ function mockInitNatsClient() returns nats:Client|error {
     return test:mock(nats:Client);
 }
 
-@test:Config {groups: ["create-user"]}
+@test:Config {groups: ["createUser"]}
 function testCreateExistingUser() returns error? {
     string existingId = uuid:createType1AsString();
     test:prepare(forumDBClient).when("queryRow").thenReturn(existingId);
@@ -59,7 +59,7 @@ function testCreateExistingUser() returns error? {
     test:assertEquals(response.getJsonPayload(), {error_message: "User already exists"}, "Response mismatched");
 }
 
-@test:Config {groups: ["create-user"]}
+@test:Config {groups: ["createUser"]}
 function testCreateNewUser() returns error? {
     sql:Error noUserError = error("No user found");
     test:prepare(forumDBClient).when("queryRow").thenReturn(noUserError);
@@ -241,7 +241,7 @@ function testCommentOnExistingPost() returns error? {
     test:assertEquals(response.getJsonPayload(), {message: "Comment created successfully"}, "Response mismatched");
 }
 
-@test:Config {groups: ["get-post"]}
+@test:Config {groups: ["getPost"]}
 function testGetNonExistingPost() returns error? {
     string postId = uuid:createType1AsString();
     sql:Error noPostError = error("No post found");
@@ -251,7 +251,7 @@ function testGetNonExistingPost() returns error? {
     test:assertEquals(response.getJsonPayload(), {error_message: "Post not found"}, "Response mismatched");
 }
 
-@test:Config {groups: ["get-post"]}
+@test:Config {groups: ["getPost"]}
 function testGetExistingPost() returns error? {
     string postId = uuid:createType1AsString();
     string userId = uuid:createType1AsString();
@@ -316,7 +316,7 @@ function testGetExistingPost() returns error? {
     test:assertEquals(actualPost, expectedPost, "Response mismatched");
 }
 
-@test:Config {groups: ["get-post"]}
+@test:Config {groups: ["getPost"]}
 function testGetAllPosts() returns error? {
     string postId = uuid:createType1AsString();
     string userId = uuid:createType1AsString();
