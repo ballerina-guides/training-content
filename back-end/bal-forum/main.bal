@@ -116,7 +116,7 @@ service /api on new http:Listener(4000) {
     }
 
     resource function post posts/[string id]/likes(LikePost req) returns PostLiked|PostNotFound|PostAlreadyLiked|error {
-        ForumPostInDB|error forumPost = check forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        ForumPostInDB|error forumPost = forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
         if forumPost is error {
             return <PostNotFound>{
                 body: {
@@ -145,7 +145,7 @@ service /api on new http:Listener(4000) {
     }
 
     resource function post posts/[string id]/comments(NewPostComment newComment) returns CommentAdded|PostNotFound|error {
-        ForumPostInDB|error forumPost = check forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
+        ForumPostInDB|error forumPost = forumDBClient->queryRow(`SELECT * FROM posts WHERE id = ${id}`);
         if forumPost is error {
             return {
                 body: {
@@ -168,7 +168,7 @@ service /api on new http:Listener(4000) {
     }
 
     resource function get posts/[string id]() returns ForumPost|PostNotFound|error {
-        ForumPostInDB|error forumPost = check forumDBClient->queryRow(`
+        ForumPostInDB|error forumPost = forumDBClient->queryRow(`
             SELECT posts.*, users.name 
             FROM posts INNER JOIN users ON posts.user_id = users.id 
             WHERE posts.id = ${id}

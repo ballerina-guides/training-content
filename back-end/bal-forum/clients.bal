@@ -13,7 +13,9 @@ type DBConfig record {|
 
 configurable DBConfig dbConfig = ?;
 
-final mysql:Client forumDBClient = check new (...dbConfig);
+final mysql:Client forumDBClient = check initDbClient();
+
+function initDbClient() returns mysql:Client|error => new (...dbConfig);
 
 configurable SentimentClientConfig sentimentClientConfig = ?;
 
@@ -29,7 +31,9 @@ type SentimentClientConfig record {|
     label: "Sentiment Analysis Client",
     id: "sentiment-analysis"
 }
-final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
+final http:Client sentimentClient = check initSentimentClient();
+
+function initSentimentClient() returns http:Client|error => new (sentimentClientConfig.clientUrl,
     secureSocket = {
         cert: "resources/server_public.crt",
         'key: {
@@ -59,4 +63,6 @@ final http:Client sentimentClient = check new (sentimentClientConfig.clientUrl,
     label: "NATS Notification Publisher",
     id: "nats-notifier"
 }
-final nats:Client natsClient = check new (nats:DEFAULT_URL);
+final nats:Client natsClient = check initNatsClient();
+
+function initNatsClient() returns nats:Client|error => new (nats:DEFAULT_URL);
