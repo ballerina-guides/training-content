@@ -52,7 +52,7 @@ Following is the entity relationship diagram:
 
 This training will extend the Ballerina Forum application with the following features:
 
-1. Schedule a one-time task to creat a new forum post
+1. Schedule a one-time task to create a new forum post
 2. Produce a NATS event when a new user is registered
 3. Consume the above event and send an email to the user with the welcome note provided in a file
 
