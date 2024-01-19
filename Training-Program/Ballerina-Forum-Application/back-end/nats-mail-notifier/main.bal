@@ -11,7 +11,9 @@ configurable gmail:OAuth2RefreshTokenGrantConfig gmailAuthConfig = ?;
 
 configurable string adminGmail = ?;
 
-final gmail:Client gmailClient = check new ({auth: gmailAuthConfig});
+configurable string natsUrl = nats:DEFAULT_URL;
+
+final gmail:Client gmailClient = check getGmailClient();
 
 const WELCOME_MAIL_SUBJECT = "Welcome to the Ballerina Language Forum!";
 
@@ -34,7 +36,7 @@ function sendGmailGreeting(RegisterEvent event) returns error? {
     label: "NATS Notification Consumer",
     id: "nats-notifier"
 }
-service "ballerina.forum.new.user" on new nats:Listener(nats:DEFAULT_URL) {
+service "ballerina.forum.new.user" on new nats:Listener(natsUrl) {
     public function init() returns error? {
         log:printInfo("Mail notifier service started");
     }
@@ -44,3 +46,6 @@ service "ballerina.forum.new.user" on new nats:Listener(nats:DEFAULT_URL) {
     }
 }
 
+function getGmailClient() returns gmail:Client|error {
+    return new gmail:Client({auth: gmailAuthConfig});
+}
