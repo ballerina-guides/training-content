@@ -1,0 +1,10 @@
+version: '2.14.0'
+
+# This file can be used to test the nats-mail-notifier.
+# Run `docker compose up` before running the tests.
+services:
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+    network_mode: "host"

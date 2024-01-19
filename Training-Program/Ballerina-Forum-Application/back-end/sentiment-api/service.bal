@@ -82,4 +82,3 @@ type Sentiment record {
 type Post record {
     string text;
 };
-

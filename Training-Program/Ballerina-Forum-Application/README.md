@@ -1,5 +1,35 @@
 # Integration Basics with Ballerina
 
+## Table of Contents
+
+- [Integration Basics with Ballerina](#integration-basics-with-ballerina)
+  - [Table of Contents](#table-of-contents)
+  - [Training Objective](#training-objective)
+  - [Prerequisites](#prerequisites)
+  - [Scenario](#scenario)
+    - [Areas Covered in this scenario](#areas-covered-in-this-scenario)
+    - [Task 1 - Implement registration and login resources](#task-1---implement-registration-and-login-resources)
+      - [Task 1.1 - Implement Registration resource](#task-11---implement-registration-resource)
+      - [Task 1.2 - Login resource](#task-12---login-resource)
+    - [Task 2 - Implement forum post related resources](#task-2---implement-forum-post-related-resources)
+      - [Task 2.1 - Post creation resource](#task-21---post-creation-resource)
+      - [Task 2.2 - Post like resource](#task-22---post-like-resource)
+      - [Task 2.3 - Post comment resource](#task-23---post-comment-resource)
+      - [Task 2.4 - Specific post retrieval resource](#task-24---specific-post-retrieval-resource)
+      - [Task 2.5 - Posts retrieval resource](#task-25---posts-retrieval-resource)
+    - [Task 3 - Verify the post content with the sentiment analysis service](#task-3---verify-the-post-content-with-the-sentiment-analysis-service)
+      - [Task 3.1 - Connect to the sentiment analysis service without SSL](#task-31---connect-to-the-sentiment-analysis-service-without-ssl)
+      - [Task 3.2 - Secure the sentiment analysis service with SSL and connect to it](#task-32---secure-the-sentiment-analysis-service-with-ssl-and-connect-to-it)
+      - [Task 3.3 - Secure the sentiment analysis service with mutual SSL and connect to it](#task-33---secure-the-sentiment-analysis-service-with-mutual-ssl-and-connect-to-it)
+      - [Task 3.4 - Secure the sentiment analysis service with OAuth2 and connect to it](#task-34---secure-the-sentiment-analysis-service-with-oauth2-and-connect-to-it)
+    - [Task 4 - Make the sentiment analysis client resilient](#task-4---make-the-sentiment-analysis-client-resilient)
+    - [Task 5 - Deploy and test the services using Docker](#task-5---deploy-and-test-the-services-using-docker)
+  - [Extended Scenario](#extended-scenario)
+    - [Areas Covered in the extended scenario](#areas-covered-in-the-extended-scenario)
+    - [Task 1 - Schedule a one-time task to create a new forum post](#task-1---schedule-a-one-time-task-to-create-a-new-forum-post)
+    - [Task 2 - Produce a NATS event when a new user is registered](#task-2---produce-a-nats-event-when-a-new-user-is-registered)
+    - [Task 3 - Consume the above event and email the user with the welcome note provided in a file](#task-3---consume-the-above-event-and-email-the-user-with-the-welcome-note-provided-in-a-file)
+
 ## Training Objective
 
 Cover basic integration scenarios with the Ballerina Forum application.
@@ -361,7 +391,7 @@ The label can be one of the following values:
 - `neg` - Negative sentiment
 - `neutral` - Neutral sentiment
 
-Pass the post tiltle and description to the sentiment analysis service and verify the sentiment score. If the label is `neg`, then the post is forbidden.
+Pass the post title and description to the sentiment analysis service and verify the sentiment score. If the label is `neg`, then the post is forbidden.
 
 - Rejected response - `403 FORBIDDEN`:
 
@@ -391,7 +421,7 @@ The sentiment analysis service is not secured with SSL. Therefore, you can conne
 
 [Secure the sentiment analysis service with OAuth2](https://ballerina.io/learn/by-example/http-service-oauth2/) and connect to it. Use an [HTTP client secured with OAuth2 refresh token grant type](https://ballerina.io/learn/by-example/http-client-oauth2-refresh-token-grant-type/) to connect to the sentiment analysis service.
 
-Connect to the mock STS endpoint is available through docker compose. The endpoint deatils are as follows:
+Connect to the mock STS endpoint is available through docker compose. The endpoint details are as follows:
 
 | Property                                             | Value                                       |
 |------------------------------------------------------|---------------------------------------------|
@@ -427,9 +457,9 @@ Build the docker images for the `bal-forum` and the `sentiment-api` services and
 
 The Ballerina Forum application is extended with the following features:
 
-1. Schedule a one-time task to creat a new forum post
+1. Schedule a one-time task to create a new forum post
 2. Produce a NATS event when a new user is registered
-3. Consume the above event and send an email to the user with the welcome note provided in a file
+3. Consume the above event and email the user with the welcome note provided in a file
 
 ![Component Diagram](images/bal-forum-extended.png)
 
@@ -448,7 +478,7 @@ Example:
 
 - Request URL : `http://localhost:4000/api/users/1/posts?schedule=2023-12-08T10:00:00Z`
 - Request Body :
-  
+
   ```json
   {
     "title": "This is a sample title",
@@ -458,7 +488,7 @@ Example:
   ```
 
 - SuccessResponse - `202 Accepted`:
-  
+
   ```json
   {
     "message": "Post creation scheduled successfully"
@@ -466,7 +496,7 @@ Example:
   ```
 
 - FailureResponse - `400 Bad Request`:
-  
+
   ```json
   {
     "message": "Invalid post schedule request"
@@ -489,11 +519,11 @@ When a new user is registered, a NATS event should be produced to the subject `b
 
 > **Hint:** Refer to [NATS client - Publish message](https://ballerina.io/learn/by-example/nats-basic-pub/) example in the Ballerina by Example guide.
 
-### Task 3 - Consume the above event and send an email to the user with the welcome note provided in a file
+### Task 3 - Consume the above event and email the user with the welcome note provided in a file
 
 A Ballerina NATS server is defined in the `backend/nats-mail-notifier` directory. This server is configured to consume the NATS event produced in the previous task.
 
-Add a [Gmail connector](https://central.ballerina.io/ballerinax/googleapis.gmail/4.0.0) to send an email to the user with the welcome note provided in `resources` directory. The email should be sent to the email address provided in the NATS event payload.
+Add a [Gmail connector](https://central.ballerina.io/ballerinax/googleapis.gmail/4.0.0) to email the user with the welcome note provided in `resources` directory. The email should be sent to the email address provided in the NATS event payload.
 
 > **Hints:**
 >
@@ -501,4 +531,4 @@ Add a [Gmail connector](https://central.ballerina.io/ballerinax/googleapis.gmail
 >
 > - Refer to the [send mails example](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/examples/send-mails/main.bal) to send an email using the Gmail connector.
 >
-> - Use [the Ballerin IO module](https://central.ballerina.io/ballerina/io/latest) to read the content of the file as string.
+> - Use [the Ballerina IO module](https://central.ballerina.io/ballerina/io/latest) to read the content of the file as string.

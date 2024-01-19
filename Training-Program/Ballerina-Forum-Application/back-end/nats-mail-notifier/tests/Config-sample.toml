@@ -1,0 +1,7 @@
+adminGmail = "ADMIN_GMAIL"
+natsUrl = "NATS_URL"
+
+[gmailAuthConfig]
+refreshToken = "REFRESH_TOKEN"
+clientSecret = "CLIENT_SECRET"
+clientId = "CLIENT_ID"
