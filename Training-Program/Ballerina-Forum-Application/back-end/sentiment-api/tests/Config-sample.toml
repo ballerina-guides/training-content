@@ -1,8 +1,0 @@
-oauth2IntrospectionUrl = "OAUTH2_INTROSPECTION_URL"
-
-[sentimentClientConfig]
-clientUrl = "CLIENT_URL"
-refreshUrl = "OAUTH2_REFRESH_URL"
-refreshToken = "OAUTH2_REFRESH_TOKEN"
-clientId = "OAUTH2_CLIENT_ID"
-clientSecret = "OAUTH2_CLIENT_SECRET"
