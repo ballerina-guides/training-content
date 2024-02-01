@@ -214,6 +214,9 @@ dependencies = [
 	{org = "ballerina", name = "lang.value"},
 	{org = "ballerina", name = "observe"}
 ]
+modules = [
+	{org = "ballerina", packageName = "log", moduleName = "log"}
+]
 
 [[package]]
 org = "ballerina"
@@ -315,11 +318,40 @@ version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "test"},
 	{org = "ballerina", name = "time"},
-	{org = "ballerinai", name = "observe"}
+	{org = "ballerinai", name = "observe"},
+	{org = "wso2", name = "choreo.sendemail"},
+	{org = "wso2", name = "choreo.sendsms"}
 ]
 modules = [
 	{org = "waruna", packageName = "bal_hotel_reservation_app", moduleName = "bal_hotel_reservation_app"}
+]
+
+[[package]]
+org = "wso2"
+name = "choreo.sendemail"
+version = "0.6.1"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerinai", name = "observe"}
+]
+modules = [
+	{org = "wso2", packageName = "choreo.sendemail", moduleName = "choreo.sendemail"}
+]
+
+[[package]]
+org = "wso2"
+name = "choreo.sendsms"
+version = "0.6.1"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerinai", name = "observe"}
+]
+modules = [
+	{org = "wso2", packageName = "choreo.sendsms", moduleName = "choreo.sendsms"}
 ]
 
