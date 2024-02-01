@@ -64,7 +64,7 @@ http:localhost:9090/reservations
         "id": "123",
         "name": "waruna",
         "email": "warunaj@wso2.com",
-        "mobileNumber": "0094713255198"
+        "mobileNumber": "+94713255198"
     },
     "roomType": "Family"
 }
@@ -82,7 +82,7 @@ http:localhost:9090/reservations
         "id": "123",
         "name": "waruna",
         "email": "warunaj@wso2.com",
-        "mobileNumber": "0094713255198"
+        "mobileNumber": "+94713255198"
     },
     "room": {
         "number" :  201,
@@ -130,4 +130,3 @@ Same as create new reservation
 **Sample Response :**
 
 Same as Get available rooms
-
