@@ -1,5 +1,9 @@
 import ballerina/http;
+import ballerina/log;
 import ballerina/time;
+
+import wso2/choreo.sendemail;
+import wso2/choreo.sendsms;
 
 table<Reservation> key(id) roomReservations = table [];
 
@@ -7,6 +11,9 @@ type ReservationError record {|
     *http:NotFound;
     string body;
 |};
+
+sendsms:Client smsClient = check new ();
+sendemail:Client emailClient = check new ();
 
 service /reservations on new http:Listener(9090) {
 
@@ -26,6 +33,7 @@ service /reservations on new http:Listener(9090) {
                 user: reservationRequest.user
             };
             roomReservations.put(reservation);
+
             return reservation;
         }
         return {body: "No rooms available for the given dates"};
@@ -40,6 +48,7 @@ service /reservations on new http:Listener(9090) {
                 reservation.room = room;
                 reservation.checkinDate = payload.checkinDate;
                 reservation.checkoutDate = payload.checkoutDate;
+                sendNotificationForReservation(reservation);
                 return reservation;
             }
         }
@@ -58,7 +67,7 @@ service /reservations on new http:Listener(9090) {
 
     resource function get users/[string userId]() returns Reservation[] {
         return from Reservation r in roomReservations
-            where r.user.email == userId
+            where r.user.id == userId
             select r;
     }
 }
@@ -74,5 +83,19 @@ function getAvailableRooms(string checkinDate, string checkoutDate, string roomT
     return from Room r in rooms
         where r.'type.name == roomType && !allocatedRooms.hasKey(r.number.toString())
         select r;
+}
+
+function sendNotificationForReservation(Reservation reservation) {
+    string message = string `We are pleased to confirm your reservation.`;
+    string emailSubject = "Reservation Confirmed";
+    string emailBody = string `Dear ${reservation.user.name},${"\n"}${"\n"}We are pleased to confirm your reservation at our hotel.${"\n"}${"\n"}Thanks, ${"\n"}Reservation Team`;
+    string|error sendEmal = trap emailClient->sendEmail(reservation.user.email, emailSubject, emailBody);
+    if (sendEmal is error) {
+        log:printError("Error sending Email: ", sendEmal);
+    }
+    string|error sendSms = trap smsClient->sendSms(reservation.user.mobileNumber, message);
+    if (sendSms is error) {
+        log:printError("Error sending SMS: ", sendSms);
+    }
 }
 
