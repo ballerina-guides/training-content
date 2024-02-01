@@ -63,8 +63,8 @@ http:localhost:9090/reservations
     "user": {
         "id": "123",
         "name": "waruna",
-        "email": "warunaj@wso2.com",
-        "mobileNumber": "+94713255198"
+        "email": "waruna@someemail.com",
+        "mobileNumber": "987"
     },
     "roomType": "Family"
 }
@@ -81,8 +81,8 @@ http:localhost:9090/reservations
     "user": {
         "id": "123",
         "name": "waruna",
-        "email": "warunaj@wso2.com",
-        "mobileNumber": "+94713255198"
+        "email": "waruna@someemail.com",
+        "mobileNumber": "987"
     },
     "room": {
         "number" :  201,
