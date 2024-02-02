@@ -1,29 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Home from './Home';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import RoomList from './RoomList';
+import RoomListing from './pages/room_listing';
+import Header from './layout/AppBar';
+import ReservationAddingPage from './pages/reservations_adding';
+
+// TODO: add code formatter with linter
+
+// TODO: add content only scroller layout
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <div style={{ display: "flex", height: "96vh", width: "96vw" }}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" Component={Home} />
-          <Route path="/home" Component={Home} />
-          {/* rooms */}
-          <Route path="/rooms" Component={RoomList} />
-          {/* reservations */}
-          <Route path="/reservations" Component={()=><div>Reservation listing</div>} />
-          {/* reservation detail */}
-          <Route path="/reservations/:id" Component={()=><div>Reservation detail</div>} />
-          {/* Otherwise, show not found page */}
-          <Route path="*" Component={()=><div>Not found</div>} />
-        </Routes>
-      </BrowserRouter>
+    <div style={{
+      backgroundImage: 'url("https://images.unsplash.com/photo-1618773928121-c32242e63f39")',
+      minHeight: "98vh",
+      backgroundSize: 'cover'
+    }}>
+      <Header />
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
+        <BrowserRouter>
+          <Routes>
+            {/* rooms */}
+            <Route path="/" Component={RoomListing} />
+            <Route path="/rooms" Component={RoomListing} />
+            {/* reservations */}
+            <Route path="/reservations" Component={() => <div>Reservation listing</div>} />
+            {/* reservation detail */}
+            <Route path="/reservations/new" Component={ReservationAddingPage} />
+            {/* Otherwise, show not found page */}
+            <Route path="*" Component={() => <div>Not found</div>} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+
     </div>
   </React.StrictMode>
 );

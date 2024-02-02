@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.6",
     "@mui/x-date-pickers": "^6.19.0",
     "@openapitools/openapi-generator-cli": "^2.9.0",
@@ -31,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generate-types": "npm run generate-types-with-apis && npm run clean-up-generated-apis",
-    "generate-types-with-apis": "openapi-generator-cli generate -i ./../spec/hotel-reservation-oas.yaml -g typescript-axios -o src/types/generated --additional-properties=withSeparateModelsAndApi=true,supportsES6=true,withInterfaces=true,apiPackage=api,modelPackage=model,apiPackage=null",
+    "generate-types-with-apis": "openapi-generator-cli generate -i ./../resources/reservations_openapi.yaml -g typescript-axios -o src/types/generated --additional-properties=withSeparateModelsAndApi=true,supportsES6=true,withInterfaces=true,apiPackage=api,modelPackage=model,apiPackage=null",
     "clean-up-generated-apis": "cp -R src/types/generated/model src/types/temp_gen; rm -rf cp src/types/generated; mv src/types/temp_gen src/types/generated"
   },
   "eslintConfig": {
