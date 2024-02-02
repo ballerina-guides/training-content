@@ -1,35 +1,39 @@
-import { useEffect, useState } from "react";
-import { RoomList } from "../types/generated";
+import { useState } from "react";
 import axios from "axios";
+import { Room } from "../types/generated";
 
-const baseUrl = "https://21f987d9-ad58-4eea-aafb-a109066aaccc.mock.pstmn.io";
+// TODO: move this to a constant or a config and re-use
+const baseUrl = "http://localhost:9090/reservations";
 
-export function useGetRooms(checkIn: string, checkOut: string, roomType: string) {
-    console.log("hook", checkIn, checkOut, roomType);
-    const [rooms, setRooms] = useState<RoomList>({ rooms: [], count: 0 });
+export function useGetRooms() {
+    const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error>();
 
-    useEffect(() => {
-        const fetchRooms = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get<RoomList>(baseUrl + "/rooms", {
-                    params: {
-                        checkin_date: checkIn,
-                        checkout_date: checkOut,
-                        room_type: roomType
-                    }
-                });
-                setRooms(response.data);
-            } catch (e: any) {
-                setError(e);
-            }
-            setLoading(false);
-        };
+    const fetchRooms = async (checkIn: string, checkOut: string, roomType: string): Promise<void> => {
+        setLoading(true);
+        try {
+            const response = await axios.get<Room[]>(baseUrl + "/rooms", {
+                withCredentials: false,
+                // TODO: use proxy to avoid CORS disabling
+                headers: {
+                    'Acccess-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Content-Type': 'application/json',
+                },
+                params: {
+                    checkinDate: checkIn,
+                    checkoutDate: checkOut,
+                    roomType: roomType
+                },
+            });
+            setRooms(response.data);
+        } catch (e: any) {
+            setError(e);
+        }
+        setLoading(false);
+    };
 
-        fetchRooms();
-    }, [checkIn, checkOut, roomType]);
-
-    return { rooms, loading, error };
+    return { rooms, loading, error, fetchRooms };
 }
