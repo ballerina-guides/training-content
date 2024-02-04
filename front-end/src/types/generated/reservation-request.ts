@@ -15,46 +15,43 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { Room } from './room';
-// May contain unused imports in some cases
-// @ts-ignore
 import { User } from './user';
 
 /**
  * 
  * @export
- * @interface Reservation
+ * @interface ReservationRequest
  */
-export interface Reservation {
-    /**
-     * 
-     * @type {number}
-     * @memberof Reservation
-     */
-    'id': number;
-    /**
-     * 
-     * @type {Room}
-     * @memberof Reservation
-     */
-    'room': Room;
+export interface ReservationRequest {
     /**
      * 
      * @type {string}
-     * @memberof Reservation
+     * @memberof ReservationRequest
      */
     'checkinDate': string;
     /**
      * 
      * @type {string}
-     * @memberof Reservation
+     * @memberof ReservationRequest
      */
     'checkoutDate': string;
     /**
      * 
+     * @type {string}
+     * @memberof ReservationRequest
+     */
+    'roomType': string;
+    /**
+     * 
      * @type {User}
-     * @memberof Reservation
+     * @memberof ReservationRequest
      */
     'user': User;
+    /**
+     * 
+     * @type {number}
+     * @memberof ReservationRequest
+     */
+    'rate': number;
 }
 
