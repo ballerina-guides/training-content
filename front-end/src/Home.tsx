@@ -77,6 +77,7 @@ function ReservationSearch() {
 }
 
 function Home() {
+    // TODO: Check whether the user is signed in
     return (
         <Box display="flex" flexDirection="column" height="100%" width="100%" justifyContent="center">
             <RoomSearch />

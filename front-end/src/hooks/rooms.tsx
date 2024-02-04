@@ -1,27 +1,30 @@
-import { useEffect, useState } from "react";
-import { RoomList } from "../types/generated";
-import axios from "axios";
-
-const baseUrl = "https://21f987d9-ad58-4eea-aafb-a109066aaccc.mock.pstmn.io";
+import { useEffect, useState } from 'react';
+import { Room } from '../types/generated';
+import { AxiosResponse } from 'axios';
+import { performRequestWithRetry } from '../api/retry';
+import { apiUrl } from '../api/constants';
 
 export function useGetRooms(checkIn: string, checkOut: string, roomType: string) {
-    console.log("hook", checkIn, checkOut, roomType);
-    const [rooms, setRooms] = useState<RoomList>({ rooms: [], count: 0 });
+    console.log('hook', checkIn, checkOut, roomType);
+    const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error>();
 
     useEffect(() => {
         const fetchRooms = async () => {
             setLoading(true);
+            const options = {
+                method: 'GET',
+                params: {
+                    checkinDate: checkIn,
+                    checkoutDate: checkOut,
+                    roomType,
+                }
+            };
             try {
-                const response = await axios.get<RoomList>(baseUrl + "/rooms", {
-                    params: {
-                        checkin_date: checkIn,
-                        checkout_date: checkOut,
-                        room_type: roomType
-                    }
-                });
-                setRooms(response.data);
+                const response = await performRequestWithRetry(`${apiUrl}/rooms`, options);
+                const roomList = (response as AxiosResponse<Room[]>).data
+                setRooms(roomList);
             } catch (e: any) {
                 setError(e);
             }
