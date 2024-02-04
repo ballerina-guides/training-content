@@ -1,11 +1,11 @@
 import React from "react";
-import { Room } from "../../types/generated";
+import { Reservation } from "../../types/generated";
 import { Box, Button, Typography } from "@mui/material";
 import LuggageOutlinedIcon from '@mui/icons-material/LuggageOutlined';
 import { Link } from "react-router-dom";
 
-export default function RoomListItem(props: { room: Room }) {
-    const { room } = props;
+export default function ReservationListItem(props: { reservation: Reservation }) {
+    const { reservation } = props;
     return (
         <Box style={{ background: 'white' }}
             display="flex" justifyContent="space-between"
@@ -22,13 +22,13 @@ export default function RoomListItem(props: { room: Room }) {
             >
                 <Box>
                     <Typography>
-                        {room.type.name}
+                        {reservation.room.type.name}
                     </Typography>
                 </Box>
                 <Box display="flex" justifyContent="flex-start" alignItems="center">
                     <Box><LuggageOutlinedIcon /></Box>
                     <Box>
-                        <Typography fontSize={12}>{room.type.guestCapacity} Guests</Typography>
+                        <Typography fontSize={12}>{reservation.room.type.guestCapacity} Guests</Typography>
                     </Box>
                 </Box>
             </Box>
@@ -41,7 +41,11 @@ export default function RoomListItem(props: { room: Room }) {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Typography>Room: {room.number}</Typography>
+                {/* TODO: display more meaningful details */}
+                <Typography>
+                    Room: {reservation.room.number}, User: {reservation.user?.id},
+                    Check-In: {reservation.checkinDate}, Check-Out: {reservation.checkoutDate}
+                </Typography>
             </Box>
 
             <Box
@@ -52,7 +56,7 @@ export default function RoomListItem(props: { room: Room }) {
                 justifyContent="center"
                 alignItems="flex-end"
             >
-                <Typography>{room.type.price} $ /day</Typography>
+                <Typography>{reservation.room.type.price} $ /day</Typography>
             </Box>
 
             <Box
@@ -64,9 +68,10 @@ export default function RoomListItem(props: { room: Room }) {
                 justifyContent="flex-end"
                 alignItems="center"
             >
-                <Link to="/reservations/new" state={{ room }}>
-                    <Button style={{ textTransform: 'none' }} variant="contained">Reserve</Button>
+                <Link to="/reservations/change" state={{ reservation }}>
+                    <Button style={{ textTransform: 'none' }} variant="outlined">Change</Button>
                 </Link>
+                <Button style={{ textTransform: 'none', color: 'red' }} variant="contained" >Remove</Button>
             </Box>
         </Box>
     );

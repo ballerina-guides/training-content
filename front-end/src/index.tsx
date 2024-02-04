@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import RoomListing from './pages/room_listing';
 import Header from './layout/AppBar';
 import ReservationAddingPage from './pages/reservations_adding';
+import ReservationListing from './pages/reservation_listing';
 
 // TODO: add code formatter with linter
 
@@ -27,7 +28,7 @@ root.render(
             <Route path="/" Component={RoomListing} />
             <Route path="/rooms" Component={RoomListing} />
             {/* reservations */}
-            <Route path="/reservations" Component={() => <div>Reservation listing</div>} />
+            <Route path="/reservations" Component={ReservationListing} />
             {/* reservation detail */}
             <Route path="/reservations/new" Component={ReservationAddingPage} />
             {/* Otherwise, show not found page */}

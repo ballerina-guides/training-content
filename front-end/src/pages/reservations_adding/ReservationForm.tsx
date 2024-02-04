@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { Box, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { useReserveRoom } from '../../hooks/reservations';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Room } from '../../types/generated';
+import { Location } from 'history';
+
+interface RoomState {
+  room: Room;
+}
 
 const ReservationForm = () => {
   const {
-    // reservation,
+    reservation,
     loading,
     error,
     reserveRoom
   } = useReserveRoom();
+
+
+  const { state: { room } } = useLocation() as Location<RoomState>;
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -19,6 +30,9 @@ const ReservationForm = () => {
     checkOutDate: '',
     comments: ''
   });
+
+
+  // TODO: check why these handlers are not working with chrome auto data fill
 
   const handleTextChange = (name: string) => (e: any) => {
     const { value } = e.target;
@@ -36,19 +50,29 @@ const ReservationForm = () => {
     }));
   };
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     console.log("handleReserve");
     // TODO: remove comment input field
     const { firstName, lastName, mobileNumber, emailAddress, checkInDate, checkOutDate, comments } = formData;
     console.log('formData', formData);
 
     // TODO: have the user from the auth user object
-    reserveRoom(checkInDate, checkOutDate, 100, 'single', {
+    await reserveRoom(checkInDate, checkOutDate, 100, room.type.name, {
       email: emailAddress,
       id: "1",
       mobileNumber,
       name: `${firstName} ${lastName}`
     });
+
+    if (error) {
+      alert('Reservation failed');
+      return;
+    }
+    alert('Reservation successful');
+    navigate('/reservations', { state: { reservation } });
+
+
+    // TODO: show a success message.. maybe snackbar.. and redirect to the reservations page
   };
 
   return (

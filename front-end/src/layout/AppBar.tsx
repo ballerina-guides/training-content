@@ -9,8 +9,9 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import AppBar from '@mui/material/AppBar';
 import { Home } from '@mui/icons-material';
+import { Button } from '@mui/material';
 
-const settings = ['My Reservations', 'Logout'];
+const settings = ['', 'Logout'];
 
 function Header() {
     // const location = useLocation();
@@ -45,7 +46,7 @@ function Header() {
                 >
                     LOGO
                 </Typography>
-                <IconButton onClick={()=>{window.location.pathname = "/"}} style={{color: 'white'}}>
+                <IconButton onClick={() => { window.location.pathname = "/" }} style={{ color: 'white' }}>
                     <Home />
                 </IconButton>
             </div>
@@ -72,11 +73,16 @@ function Header() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                 >
-                    {settings.map((setting) => (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">{setting}</Typography>
-                        </MenuItem>
-                    ))}
+                    <MenuItem onClick={handleCloseUserMenu}>
+                        <Button>
+                            <Typography textAlign="center">My Reservations</Typography>
+                        </Button>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseUserMenu}>
+                        <Button>
+                            <Typography textAlign="center">Logout</Typography>
+                        </Button>
+                    </MenuItem>
                 </Menu>
             </Box>
         </AppBar>

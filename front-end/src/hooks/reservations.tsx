@@ -29,3 +29,31 @@ export function useReserveRoom() {
 
     return { reservation, loading, error, reserveRoom };
 }
+
+export function useGetReservations() {
+    const [reservations, setReservations] = useState<Reservation[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error>();
+
+    const fetchReservations = async (userId: string): Promise<void> => {
+        setLoading(true);
+        try {
+            const response = await axios.get<Reservation[]>(baseUrl + "/users/" + userId, {
+                withCredentials: false,
+                // TODO: use proxy to avoid CORS disabling
+                headers: {
+                    'Acccess-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Content-Type': 'application/json',
+                },
+            });
+            setReservations(response.data);
+        } catch (e: any) {
+            setError(e);
+        }
+        setLoading(false);
+    };
+
+    return { reservations, loading, error, fetchReservations };
+}
