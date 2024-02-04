@@ -24,7 +24,6 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -34,7 +33,9 @@
     "eject": "react-scripts eject",
     "generate-types": "npm run generate-types-with-apis && npm run clean-up-generated-apis",
     "generate-types-with-apis": "openapi-generator-cli generate -i ./../resources/reservations_openapi.yaml -g typescript-axios -o src/types/generated --additional-properties=withSeparateModelsAndApi=true,supportsES6=true,withInterfaces=true,apiPackage=api,modelPackage=model,apiPackage=null",
-    "clean-up-generated-apis": "cp -R src/types/generated/model src/types/temp_gen; rm -rf cp src/types/generated; mv src/types/temp_gen src/types/generated"
+    "clean-up-generated-apis": "cp -R src/types/generated/model src/types/temp_gen; rm -rf cp src/types/generated; mv src/types/temp_gen src/types/generated",
+    "lint": "eslint --ext .js,.ts,.tsx src/*",
+    "format": "prettier --write 'src/**/*.{js,ts,tsx,json}'"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +56,16 @@
     ]
   },
   "devDependencies": {
-    "@types/js-cookie": "^3.0.6"
+    "@types/js-cookie": "^3.0.6",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "eslint": "^8.56.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
   }
 }
