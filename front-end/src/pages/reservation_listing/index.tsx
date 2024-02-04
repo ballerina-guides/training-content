@@ -1,18 +1,19 @@
-import { Reservation, User } from "../../types/generated";
+import { Reservation } from "../../types/generated";
 import { Box } from "@mui/material";
 import { useGetReservations } from "../../hooks/reservations";
 import ReservationListItem from "./ReservationListItem";
-import { useEffect } from "react";
-import { Location } from 'history';
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../contexts/user";
 
 
 function ReservationListing() {
-    const { state: user } = useLocation() as Location<User>;
+    const user = useContext(UserContext);
+    // TODO: use loader and error handling
     const { fetchReservations, reservations, loading, error } = useGetReservations();
 
+    // TODO: try and avoid fetching reservations twice
     useEffect(() => {
-        fetchReservations("1")
+        fetchReservations(user?.id)
     }, [])
 
     return (

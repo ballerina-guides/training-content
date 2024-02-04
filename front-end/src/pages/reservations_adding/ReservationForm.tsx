@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, TextField, Typography, Button, CircularProgress } from '@mui/material';
 import { useReserveRoom } from '../../hooks/reservations';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Room } from '../../types/generated';
 import { Location } from 'history';
+import { UserContext } from '../../contexts/user';
 
 interface RoomState {
   room: Room;
@@ -16,6 +17,8 @@ const ReservationForm = () => {
     error,
     reserveRoom
   } = useReserveRoom();
+
+  const user = useContext(UserContext);
 
 
   const { state: { room } } = useLocation() as Location<RoomState>;
@@ -56,10 +59,9 @@ const ReservationForm = () => {
     const { firstName, lastName, mobileNumber, emailAddress, checkInDate, checkOutDate, comments } = formData;
     console.log('formData', formData);
 
-    // TODO: have the user from the auth user object
     await reserveRoom(checkInDate, checkOutDate, 100, room.type.name, {
       email: emailAddress,
-      id: "1",
+      id: user.id,
       mobileNumber,
       name: `${firstName} ${lastName}`
     });

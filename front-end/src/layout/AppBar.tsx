@@ -11,10 +11,8 @@ import AppBar from '@mui/material/AppBar';
 import { Home } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
-const settings = ['', 'Logout'];
 
 function Header() {
-    // const location = useLocation();
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -73,12 +71,15 @@ function Header() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                 >
-                    <MenuItem onClick={handleCloseUserMenu}>
+                    <MenuItem onClick={() => window.location.pathname = "/reservations"}>
                         <Button>
                             <Typography textAlign="center">My Reservations</Typography>
                         </Button>
                     </MenuItem>
-                    <MenuItem onClick={handleCloseUserMenu}>
+                    <MenuItem onClick={() => {
+                        sessionStorage.removeItem("userInfo");
+                        window.location.pathname = "/auth/login";
+                    }}>
                         <Button>
                             <Typography textAlign="center">Logout</Typography>
                         </Button>
