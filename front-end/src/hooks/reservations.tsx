@@ -57,3 +57,22 @@ export function useGetReservations() {
 
     return { reservations, loading, error, fetchReservations };
 }
+
+export function useDeleteReservation() {
+    const [deleted, setDeleted] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+    const [error, setError] = useState<Error>();
+
+    const deleteReservation = async (id: number): Promise<void> => {
+        setDeleting(true);
+        try {
+            await axios.delete(baseUrl + "/" + id);
+            setDeleted(true);
+        } catch (e: any) {
+            setError(e);
+        }
+        setDeleting(false);
+    };
+
+    return { deleted, deleting, error, deleteReservation };
+}
