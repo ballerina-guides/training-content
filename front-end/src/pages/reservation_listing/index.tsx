@@ -1,5 +1,5 @@
 import { Reservation } from "../../types/generated";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useGetReservations } from "../../hooks/reservations";
 import ReservationListItem from "./ReservationListItem";
 import { useContext, useEffect } from "react";
@@ -37,6 +37,11 @@ function ReservationListing() {
               key={reservation.id}
             />
           ))}
+          {!reservations || reservations.length === 0 && (
+            <Typography variant="h4" color="white" align="center">
+              No reservations found
+            </Typography>
+          )}
       </Box>
     </div>
   );

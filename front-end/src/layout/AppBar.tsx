@@ -32,6 +32,7 @@ function Header() {
         padding: "8px",
         paddingLeft: "16px",
         paddingRight: "16px",
+        marginBottom: "64px",
       }}
     >
       <div style={{ display: "flex" }}>
@@ -51,7 +52,7 @@ function Header() {
             textDecoration: "none",
           }}
         >
-          LOGO
+          Luxury Hotels
         </Typography>
         <IconButton
           onClick={() => {
@@ -88,7 +89,7 @@ function Header() {
           <MenuItem
             onClick={() => (window.location.pathname = "/reservations")}
           >
-            <Button>
+            <Button style={{textTransform: 'none'}}>
               <Typography textAlign="center">My Reservations</Typography>
             </Button>
           </MenuItem>
@@ -98,7 +99,7 @@ function Header() {
               window.location.pathname = "/auth/login";
             }}
           >
-            <Button>
+            <Button style={{textTransform: 'none'}}>
               <Typography textAlign="center">Logout</Typography>
             </Button>
           </MenuItem>

@@ -5,6 +5,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextField,
+  Theme,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -25,16 +27,18 @@ export function RoomSearchBar(props: RoomSearchProps) {
   const [checkOut, setCheckOut] = React.useState<Date | null>(new Date());
   const [validationError, setValidationError] = React.useState<string>("");
 
-  const handleRoomTypeChange = (event: SelectChangeEvent) => {
+  const handleRoomTypeChange = (event: any) => {
     setRoomType(event.target.value as string);
   };
 
-  const handleCheckInChange = (date: Date | null) => {
-    setCheckIn(date);
+  const handleCheckInChange = (e: any) => {
+    const { value } = e.target;
+    setCheckIn(new Date(value));
   };
 
-  const handleCheckOutChange = (date: Date | null) => {
-    setCheckOut(date);
+  const handleCheckOutChange = (e: any) => {
+    const { value } = e.target;
+    setCheckOut(new Date(value));
   };
 
   const handleRoomSearch = () => {
@@ -51,43 +55,53 @@ export function RoomSearchBar(props: RoomSearchProps) {
     <Box
       flexDirection="row"
       display="flex"
-      justifyContent="space-around"
+      justifyContent="space-between"
       border={1}
       px={8}
       py={4}
       mb={4}
       style={{ background: "rgba(0, 0, 0, 0.5)" }}
     >
-      <Box style={{ backgroundColor: "white" }}>
-        <Typography variant="h6">Check-in date</Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker onChange={handleCheckInChange} />
-        </LocalizationProvider>
-      </Box>
-      <Box style={{ backgroundColor: "white" }}>
-        <Typography variant="h6">Check-out date</Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker onChange={handleCheckOutChange} />
-        </LocalizationProvider>
-      </Box>
-      <Box style={{ backgroundColor: "white" }}>
-        <Typography variant="h6">Room type</Typography>
-        <FormControl>
-          <Select
-            labelId="demo-simple-select-label"
+      <Box display="flex" width="70%" justifyContent="space-between">
+        <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
+          <TextField
+            onChange={handleCheckInChange}
+            fullWidth
+            label="Check In Date"
+            variant="filled"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
+        <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
+          <TextField
+            onChange={handleCheckOutChange}
+            fullWidth
+            label="Check In Date"
+            variant="filled"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
+        <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
+          <TextField
+            fullWidth
+            label="Room Type"
             id="demo-simple-select"
             value={roomType}
             placeholder="All types"
+            select={true}
             onChange={handleRoomTypeChange}
+            variant="filled"
           >
             <MenuItem value={"Single"}>Single</MenuItem>
             <MenuItem value={"Double"}>Double</MenuItem>
             <MenuItem value={"Suit"}>Suit</MenuItem>
-          </Select>
-        </FormControl>
+          </TextField>
+        </Box>
       </Box>
       <Button
-        style={{ textTransform: "none" }}
+        style={{ textTransform: "none", width: "20%", borderRadius: '8px' }}
         variant="contained"
         onClick={handleRoomSearch}
       >

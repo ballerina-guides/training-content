@@ -80,7 +80,7 @@ const ReservationUpdateForm = () => {
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        mb={2}
+        my={4}
       >
         <Box width="48%">
           <TextField
@@ -106,13 +106,13 @@ const ReservationUpdateForm = () => {
 
       {/* Action buttons */}
       <Box display="flex" justifyContent="flex-end">
-        <Button onClick={() => navigate("/reservations")} color="secondary">
+        <Button variant="outlined" style={{ textTransform: "none" }} onClick={() => navigate("/reservations")} color="secondary">
           Cancel
         </Button>
         <Button
           variant="contained"
           color="primary"
-          style={{ marginLeft: "8px" }}
+          style={{ marginLeft: "8px", textTransform: "none" }}
           onClick={handleReserve}
           disabled={updating}
         >

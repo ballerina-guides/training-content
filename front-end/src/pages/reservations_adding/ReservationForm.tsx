@@ -33,7 +33,6 @@ const ReservationForm = () => {
     emailAddress: "",
     checkinDate: "",
     checkoutDate: "",
-    comments: "",
   });
 
   // TODO: check why these handlers are not working with chrome auto data fill
@@ -64,7 +63,6 @@ const ReservationForm = () => {
       emailAddress,
       checkinDate,
       checkoutDate,
-      comments,
     } = formData;
     console.log("formData", formData);
 
@@ -149,7 +147,7 @@ const ReservationForm = () => {
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        mb={2}
+        mb={4}
       >
         <Box width="48%">
           <TextField
@@ -172,26 +170,21 @@ const ReservationForm = () => {
           />
         </Box>
       </Box>
-      <Box mb={2}>
-        <TextField
-          onChange={handleTextChange("comments")}
-          fullWidth
-          label="Comments"
-          variant="outlined"
-          multiline
-          rows={3}
-        />
-      </Box>
 
       {/* Action buttons */}
       <Box display="flex" justifyContent="flex-end">
-        <Button onClick={() => navigate("/rooms")} color="secondary">
+        <Button
+          style={{ textTransform: "none" }}
+          onClick={() => navigate("/rooms")}
+          color="secondary"
+          variant="outlined"
+        >
           Cancel
         </Button>
         <Button
           variant="contained"
           color="primary"
-          style={{ marginLeft: "8px" }}
+          style={{ marginLeft: "8px", textTransform: "none" }}
           onClick={handleReserve}
           disabled={loading}
         >

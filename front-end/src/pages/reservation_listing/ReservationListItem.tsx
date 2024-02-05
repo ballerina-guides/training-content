@@ -2,8 +2,8 @@ import React from "react";
 import { Reservation } from "../../types/generated";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import LuggageOutlinedIcon from "@mui/icons-material/LuggageOutlined";
-import { Link } from "react-router-dom";
 import { useDeleteReservation } from "../../hooks/reservations";
+import { useNavigate } from "react-router-dom";
 
 export default function ReservationListItem(props: {
   reservation: Reservation;
@@ -14,6 +14,7 @@ export default function ReservationListItem(props: {
     error: deleteError,
     deleteReservation,
   } = useDeleteReservation();
+  const navigate = useNavigate();
 
   const handleDeleteReservation = async () => {
     await deleteReservation(reservation.id);
@@ -91,22 +92,24 @@ export default function ReservationListItem(props: {
         p={2}
         pr={4}
         display="flex"
-        flexDirection="column"
+        flexDirection="row"
         justifyContent="flex-end"
         alignItems="center"
       >
-        <Link to="/reservations/change" state={{ reservation }}>
-          <Button style={{ textTransform: "none" }} variant="outlined">
-            Change
-          </Button>
-        </Link>
         <Button
-          style={{ textTransform: "none", color: "red" }}
+          onClick={() => navigate("/reservations/change", { state: reservation})}
+          style={{ textTransform: "none", marginRight: "4px", width: '48%'}}
+          variant="outlined"
+        >
+          Change
+        </Button>
+        <Button
+          style={{ textTransform: "none", backgroundColor: "#f0625d", width: '48%' }}
           variant="contained"
           onClick={handleDeleteReservation}
           disabled={deleting}
         >
-          {deleting ? <CircularProgress /> : "Delete"}
+          {deleting ? <CircularProgress style={{height: '32px'}} /> : "Delete"}
         </Button>
       </Box>
     </Box>
