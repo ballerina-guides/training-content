@@ -7,6 +7,7 @@ import ReservationAddingPage from "./pages/reservations_adding";
 import ReservationListing from "./pages/reservation_listing";
 import { UserContext } from "./contexts/user";
 import { User } from "./types/generated";
+import ReservationUpdatingPage from "./pages/reservations_updating";
 
 export default function App() {
   const [signedIn, setSignedIn] = useState(false);
@@ -92,10 +93,15 @@ export default function App() {
               <Route path="/rooms" Component={RoomListing} />
               {/* reservations */}
               <Route path="/reservations" Component={ReservationListing} />
-              {/* reservation detail */}
+              {/* new reservation */}
               <Route
                 path="/reservations/new"
                 Component={ReservationAddingPage}
+              />
+              {/* update reservation */}
+              <Route
+                path="/reservations/change"
+                Component={ReservationUpdatingPage}
               />
 
               {/* Fake login page. TODO: remove this */}

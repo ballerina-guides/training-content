@@ -31,8 +31,8 @@ const ReservationForm = () => {
     lastName: "",
     mobileNumber: "",
     emailAddress: "",
-    checkInDate: "",
-    checkOutDate: "",
+    checkinDate: "",
+    checkoutDate: "",
     comments: "",
   });
 
@@ -62,17 +62,23 @@ const ReservationForm = () => {
       lastName,
       mobileNumber,
       emailAddress,
-      checkInDate,
-      checkOutDate,
+      checkinDate,
+      checkoutDate,
       comments,
     } = formData;
     console.log("formData", formData);
 
-    await reserveRoom(checkInDate, checkOutDate, 100, room.type.name, {
-      email: emailAddress,
-      id: user.id,
-      mobileNumber,
-      name: `${firstName} ${lastName}`,
+    await reserveRoom({
+      checkinDate,
+      checkoutDate,
+      rate: 100,
+      roomType: room.type.name,
+      user: {
+        email: emailAddress,
+        id: user.id,
+        mobileNumber,
+        name: `${firstName} ${lastName}`,
+      },
     });
 
     if (error) {
@@ -147,7 +153,7 @@ const ReservationForm = () => {
       >
         <Box width="48%">
           <TextField
-            onChange={handleDateChange("checkInDate")}
+            onChange={handleDateChange("checkinDate")}
             fullWidth
             label="Check In Date"
             variant="outlined"
@@ -157,7 +163,7 @@ const ReservationForm = () => {
         </Box>
         <Box width="48%">
           <TextField
-            onChange={handleDateChange("checkOutDate")}
+            onChange={handleDateChange("checkoutDate")}
             fullWidth
             label="Check Out Date"
             variant="outlined"
@@ -179,7 +185,9 @@ const ReservationForm = () => {
 
       {/* Action buttons */}
       <Box display="flex" justifyContent="flex-end">
-        <Button color="secondary">Cancel</Button>
+        <Button onClick={() => navigate("/rooms")} color="secondary">
+          Cancel
+        </Button>
         <Button
           variant="contained"
           color="primary"

@@ -16,12 +16,6 @@ function RoomListing() {
           roomList.map((room: Room) => (
             <RoomListItem room={room} key={room.number} />
           ))}
-        <RoomListItem
-          room={{
-            number: 1,
-            type: { id: 1, name: "Single", price: 100, guestCapacity: 1 },
-          }}
-        />
       </Box>
     </div>
   );

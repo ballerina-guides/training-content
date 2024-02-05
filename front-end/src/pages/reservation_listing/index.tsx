@@ -37,18 +37,6 @@ function ReservationListing() {
               key={reservation.id}
             />
           ))}
-        <ReservationListItem
-          reservation={{
-            id: 1,
-            checkinDate: "",
-            checkoutDate: "",
-            room: {
-              number: 1,
-              type: { id: 1, name: "Single", price: 100, guestCapacity: 1 },
-            },
-            user,
-          }}
-        />
       </Box>
     </div>
   );

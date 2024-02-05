@@ -1,7 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import { Reservation } from "../types/generated";
-import { User } from "../types/generated";
+import {
+  Reservation,
+  ReservationRequest,
+  UpdateReservationRequest,
+} from "../types/generated";
 
 const baseUrl = "http://localhost:9090/reservations";
 
@@ -10,22 +13,10 @@ export function useReserveRoom() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
 
-  const reserveRoom = async (
-    checkIn: string,
-    checkOut: string,
-    rate: number,
-    roomType: string,
-    user: User,
-  ): Promise<void> => {
+  const reserveRoom = async (request: ReservationRequest): Promise<void> => {
     setLoading(true);
     try {
-      const response = await axios.post<Reservation>(baseUrl, {
-        checkinDate: checkIn,
-        checkoutDate: checkOut,
-        rate: rate,
-        roomType: roomType,
-        user: user,
-      });
+      const response = await axios.post<Reservation>(baseUrl, request);
       setReservation(response.data);
     } catch (e: any) {
       setError(e);
@@ -84,4 +75,26 @@ export function useDeleteReservation() {
   };
 
   return { deleted, deleting, error, deleteReservation };
+}
+
+export function useUpdateReservation() {
+  const [updated, setUpdated] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [error, setError] = useState<Error>();
+
+  const updateReservation = async (
+    id: number,
+    updateRequest: UpdateReservationRequest,
+  ): Promise<void> => {
+    setUpdating(true);
+    try {
+      await axios.put(baseUrl + "/" + id, updateRequest);
+      setUpdated(true);
+    } catch (e: any) {
+      setError(e);
+    }
+    setUpdating(false);
+  };
+
+  return { updated, updating, error, updateReservation };
 }
