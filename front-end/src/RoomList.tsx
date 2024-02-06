@@ -4,13 +4,13 @@ import { useGetRooms } from "./hooks/rooms";
 import { Room } from "./types/generated";
 
 function RoomListItem(props: { room: Room }) {
-    const { room } = props;
+    const { room: {type} } = props;
     return (
         <div>
-            <div>{room.hotel}</div>
-            <div>{room.type}</div>
-            <div>{room.guest_capacity}</div>
-            <div>{room.price}</div>
+            <div>{type.id}</div>
+            <div>{type.name}</div>
+            <div>{type.guestCapacity}</div>
+            <div>{type.price}</div>
         </div>
     );
 }
@@ -18,14 +18,15 @@ function RoomListItem(props: { room: Room }) {
 
 function RoomList() {
     // get checkIn, checkOut, roomType from url
-    const query = useQuery();
-    const checkIn = query.get("checkin_date") || "";
-    const checkOut = query.get("checkout_date") || "";
-    const roomType = query.get("room_type") || "";
-    console.log("roomlist", checkIn, checkOut, roomType);
+    // const query = useQuery();
+    // const checkIn = query.get("checkin_date") || "";
+    // const checkOut = query.get("checkout_date") || "";
+    // const roomType = query.get("room_type") || "";
+    // console.log("roomlist", checkIn, checkOut, roomType);
 
     // get rooms from backend
-    const { rooms: roomList, loading, error } = useGetRooms("checkIn", "checkOut", "roomType");
+    // TODO: get checkIn, checkOut, roomType dynamically
+    const { rooms: roomList, loading, error } = useGetRooms('2024-02-19T14:00:00Z', '2024-02-20T14:00:00Z', 'Family');
 
     if (loading) {
         return <div>Loading...</div>;
@@ -37,8 +38,8 @@ function RoomList() {
 
     return (
         <div>
-            {roomList?.rooms && roomList.rooms.map((room) => (
-                <RoomListItem room={room} key={room.room_id} />
+            {roomList && roomList.map((room) => (
+                <RoomListItem room={room} key={room.number} />
             ))}
         </div>
     );
