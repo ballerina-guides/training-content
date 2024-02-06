@@ -2,6 +2,7 @@
   "name": "hotel-reservation-app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:9090",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -20,6 +21,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
+    "http-proxy-middleware": "^2.0.6",
     "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -37,14 +39,7 @@
     "generate-types": "npm run generate-types-with-apis && npm run clean-up-generated-apis",
     "generate-types-with-apis": "openapi-generator-cli generate -i ./../resources/reservations_openapi.yaml -g typescript-axios -o src/types/generated --additional-properties=withSeparateModelsAndApi=true,supportsES6=true,withInterfaces=true,apiPackage=api,modelPackage=model,apiPackage=null",
     "clean-up-generated-apis": "cp -R src/types/generated/model src/types/temp_gen; rm -rf cp src/types/generated; mv src/types/temp_gen src/types/generated",
-    "lint": "eslint --ext .js,.ts,.tsx src/*",
     "format": "prettier --write 'src/**/*.{js,ts,tsx,json}'"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -60,14 +55,6 @@
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
-    "eslint": "^8.56.0",
-    "eslint-config-standard-with-typescript": "^43.0.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   }

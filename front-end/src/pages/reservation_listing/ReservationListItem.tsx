@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Reservation } from "../../types/generated";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import LuggageOutlinedIcon from "@mui/icons-material/LuggageOutlined";
 import { useDeleteReservation } from "../../hooks/reservations";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { UserContext } from "../../contexts/user";
 
 export default function ReservationListItem(props: {
   reservation: Reservation;
+  fetchReservations: (userId: string) => void;
 }) {
-  const { reservation } = props;
+  const { reservation, fetchReservations } = props;
+  const user = useContext(UserContext);
   const {
     deleting,
     error: deleteError,
@@ -19,11 +23,11 @@ export default function ReservationListItem(props: {
   const handleDeleteReservation = async () => {
     await deleteReservation(reservation.id);
     if (deleteError) {
-      alert("Error occurred while deleting the reservation");
+      toast.error("Error occurred while deleting the reservation");
     } else {
-      alert("Reservation deleted successfully");
+      toast.success("Reservation deleted successfully");
     }
-    window.location.reload();
+    fetchReservations(user?.id);
   };
 
   return (
@@ -97,19 +101,29 @@ export default function ReservationListItem(props: {
         alignItems="center"
       >
         <Button
-          onClick={() => navigate("/reservations/change", { state: reservation})}
-          style={{ textTransform: "none", marginRight: "4px", width: '48%'}}
+          onClick={() =>
+            navigate("/reservations/change", { state: { reservation } })
+          }
+          style={{ textTransform: "none", marginRight: "4px", width: "48%" }}
           variant="outlined"
         >
           Change
         </Button>
         <Button
-          style={{ textTransform: "none", backgroundColor: "#f0625d", width: '48%' }}
+          style={{
+            textTransform: "none",
+            backgroundColor: "#f0625d",
+            width: "48%",
+          }}
           variant="contained"
           onClick={handleDeleteReservation}
           disabled={deleting}
         >
-          {deleting ? <CircularProgress style={{height: '32px'}} /> : "Delete"}
+          {deleting ? (
+            <CircularProgress style={{ height: "32px" }} />
+          ) : (
+            "Delete"
+          )}
         </Button>
       </Box>
     </Box>

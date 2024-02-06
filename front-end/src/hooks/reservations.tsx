@@ -1,12 +1,12 @@
 import { useState } from "react";
-import axios from "axios";
+import { AxiosResponse } from "axios";
 import {
   Reservation,
   ReservationRequest,
   UpdateReservationRequest,
 } from "../types/generated";
-
-const baseUrl = "http://localhost:9090/reservations";
+import { performRequestWithRetry } from "../api/retry";
+import { apiUrl } from "../api/config";
 
 export function useReserveRoom() {
   const [reservation, setReservation] = useState<Reservation>();
@@ -15,9 +15,16 @@ export function useReserveRoom() {
 
   const reserveRoom = async (request: ReservationRequest): Promise<void> => {
     setLoading(true);
+    const options = {
+      method: "POST",
+      data: request,
+    };
     try {
-      const response = await axios.post<Reservation>(baseUrl, request);
-      setReservation(response.data);
+      const response = await performRequestWithRetry(
+        `${apiUrl}/`,
+        options
+      );
+      setReservation((response as AxiosResponse<Reservation>).data);
     } catch (e: any) {
       setError(e);
     }
@@ -34,21 +41,15 @@ export function useGetReservations() {
 
   const fetchReservations = async (userId: string): Promise<void> => {
     setLoading(true);
+    const options = {
+      method: "GET",
+    };
     try {
-      const response = await axios.get<Reservation[]>(
-        baseUrl + "/users/" + userId,
-        {
-          withCredentials: false,
-          // TODO: use proxy to avoid CORS disabling
-          headers: {
-            "Acccess-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Content-Type": "application/json",
-          },
-        },
+      const response = await performRequestWithRetry(
+        `${apiUrl}/users/${userId}`,
+        options
       );
-      setReservations(response.data);
+      setReservations((response as AxiosResponse<Reservation[]>).data);
     } catch (e: any) {
       setError(e);
     }
@@ -65,8 +66,14 @@ export function useDeleteReservation() {
 
   const deleteReservation = async (id: number): Promise<void> => {
     setDeleting(true);
+    const options = {
+      method: "DELETE",
+    };
     try {
-      await axios.delete(baseUrl + "/" + id);
+      const response = await performRequestWithRetry(
+        `${apiUrl}/${id}`,
+        options
+      );
       setDeleted(true);
     } catch (e: any) {
       setError(e);
@@ -84,11 +91,15 @@ export function useUpdateReservation() {
 
   const updateReservation = async (
     id: number,
-    updateRequest: UpdateReservationRequest,
+    updateRequest: UpdateReservationRequest
   ): Promise<void> => {
     setUpdating(true);
+    const options = {
+      method: "PUT",
+      data: updateRequest,
+    };
     try {
-      await axios.put(baseUrl + "/" + id, updateRequest);
+      await performRequestWithRetry(`${apiUrl}/${id}`, options);
       setUpdated(true);
     } catch (e: any) {
       setError(e);

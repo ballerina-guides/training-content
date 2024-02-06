@@ -2,10 +2,11 @@ import React from "react";
 import { Room } from "../../types/generated";
 import { Box, Button, Typography } from "@mui/material";
 import LuggageOutlinedIcon from "@mui/icons-material/LuggageOutlined";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function RoomListItem(props: { room: Room }) {
   const { room } = props;
+  const navigate = useNavigate();
   return (
     <Box
       style={{ background: "white" }}
@@ -71,11 +72,15 @@ export default function RoomListItem(props: { room: Room }) {
         justifyContent="flex-end"
         alignItems="center"
       >
-        <Link to="/reservations/new" state={{ room }}>
-          <Button style={{ textTransform: "none" }} variant="contained">
-            Reserve
-          </Button>
-        </Link>
+        <Button
+          onClick={() => {
+            navigate("/reservations/new", { state: { room } });
+          }}
+          style={{ textTransform: "none" }}
+          variant="contained"
+        >
+          Reserve
+        </Button>
       </Box>
     </Box>
   );

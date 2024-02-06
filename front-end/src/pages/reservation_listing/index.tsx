@@ -35,13 +35,15 @@ function ReservationListing() {
             <ReservationListItem
               reservation={reservation}
               key={reservation.id}
+              fetchReservations={fetchReservations}
             />
           ))}
-          {!reservations || reservations.length === 0 && (
+        {!reservations ||
+          (reservations.length === 0 && (
             <Typography variant="h4" color="white" align="center">
               No reservations found
             </Typography>
-          )}
+          ))}
       </Box>
     </div>
   );

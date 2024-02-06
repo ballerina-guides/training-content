@@ -8,6 +8,8 @@ import ReservationListing from "./pages/reservation_listing";
 import { UserContext } from "./contexts/user";
 import { User } from "./types/generated";
 import ReservationUpdatingPage from "./pages/reservations_updating";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   const [signedIn, setSignedIn] = useState(false);
@@ -77,6 +79,7 @@ export default function App() {
   return (
     <>
       <Header />
+      <ToastContainer />
       <div
         style={{
           display: "flex",

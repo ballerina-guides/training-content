@@ -1,9 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
+import { AxiosResponse } from "axios";
 import { Room } from "../types/generated";
-
-// TODO: move this to a constant or a config and re-use
-const baseUrl = "http://localhost:9090/reservations";
+import { performRequestWithRetry } from "../api/retry";
+import { apiUrl } from "../api/config";
 
 export function useGetRooms() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -13,26 +12,24 @@ export function useGetRooms() {
   const fetchRooms = async (
     checkIn: string,
     checkOut: string,
-    roomType: string,
+    roomType: string
   ): Promise<void> => {
     setLoading(true);
+    const options = {
+      method: "GET",
+      params: {
+        checkinDate: checkIn,
+        checkoutDate: checkOut,
+        roomType,
+      },
+    };
     try {
-      const response = await axios.get<Room[]>(baseUrl + "/rooms", {
-        withCredentials: false,
-        // TODO: use proxy to avoid CORS disabling
-        headers: {
-          "Acccess-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Content-Type": "application/json",
-        },
-        params: {
-          checkinDate: checkIn,
-          checkoutDate: checkOut,
-          roomType: roomType,
-        },
-      });
-      setRooms(response.data);
+      const response = await performRequestWithRetry(
+        `${apiUrl}/rooms`,
+        options
+      );
+      const roomList = (response as AxiosResponse<Room[]>).data;
+      setRooms(roomList);
     } catch (e: any) {
       setError(e);
     }

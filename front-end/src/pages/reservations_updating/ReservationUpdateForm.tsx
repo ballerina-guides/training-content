@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Reservation, Room } from "../../types/generated";
 import { Location } from "history";
 import { UserContext } from "../../contexts/user";
+import {toast} from "react-toastify";
 
 interface ReservationState {
   reservation: Reservation;
@@ -32,16 +33,6 @@ const ReservationUpdateForm = () => {
     checkoutDate: "",
   });
 
-  // TODO: check why these handlers are not working with chrome auto data fill
-
-  const handleTextChange = (name: string) => (e: any) => {
-    const { value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   const handleDateChange = (name: string) => (e: any) => {
     const { value } = e.target;
     setFormData((prevData) => ({
@@ -53,13 +44,11 @@ const ReservationUpdateForm = () => {
   const handleReserve = async () => {
     await updateReservation(reservation.id, formData);
     if (error) {
-      alert("Reservation udpate failed");
+      toast.error("Error occurred while updating the reservation");
       return;
     }
-    alert("Reservation update successful");
-    navigate("/reservations", { state: { reservation } });
-
-    // TODO: show a success message.. maybe snackbar.. and redirect to the reservations page
+    toast.success("Reservation updated successfully");
+    navigate("/reservations");
   };
 
   return (

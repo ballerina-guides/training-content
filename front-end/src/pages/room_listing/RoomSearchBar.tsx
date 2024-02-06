@@ -1,17 +1,10 @@
 import {
   Box,
   Button,
-  FormControl,
   MenuItem,
-  Select,
-  SelectChangeEvent,
   TextField,
-  Theme,
   Typography,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React from "react";
 
 interface RoomSearchProps {
@@ -25,7 +18,6 @@ export function RoomSearchBar(props: RoomSearchProps) {
   const [roomType, setRoomType] = React.useState("Single");
   const [checkIn, setCheckIn] = React.useState<Date | null>(new Date());
   const [checkOut, setCheckOut] = React.useState<Date | null>(new Date());
-  const [validationError, setValidationError] = React.useState<string>("");
 
   const handleRoomTypeChange = (event: any) => {
     setRoomType(event.target.value as string);
@@ -42,10 +34,8 @@ export function RoomSearchBar(props: RoomSearchProps) {
   };
 
   const handleRoomSearch = () => {
-    // TODO: make the search button disable if the date is not selected
     console.log(checkIn, checkOut, roomType);
     if (checkIn === null || checkOut === null) {
-      setValidationError("Please select check-in and check-out dates");
       return;
     }
     searchRooms(checkIn.toISOString(), checkOut.toISOString(), roomType);
@@ -71,6 +61,7 @@ export function RoomSearchBar(props: RoomSearchProps) {
             variant="filled"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={checkIn?.toISOString().split("T")[0]}
           />
         </Box>
         <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
@@ -81,6 +72,7 @@ export function RoomSearchBar(props: RoomSearchProps) {
             variant="filled"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={checkOut?.toISOString().split("T")[0]}
           />
         </Box>
         <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
@@ -104,6 +96,7 @@ export function RoomSearchBar(props: RoomSearchProps) {
         style={{ textTransform: "none", width: "20%", borderRadius: '8px' }}
         variant="contained"
         onClick={handleRoomSearch}
+        disabled={checkIn === null || checkOut === null || loading || roomType === ""}
       >
         {loading ? (
           <Typography>Searching...</Typography>
@@ -112,9 +105,6 @@ export function RoomSearchBar(props: RoomSearchProps) {
         )}
       </Button>
       {error && <Typography color="red">{error.message}</Typography>}
-      {validationError && (
-        <Typography color="red">{validationError}</Typography>
-      )}
     </Box>
   );
 }

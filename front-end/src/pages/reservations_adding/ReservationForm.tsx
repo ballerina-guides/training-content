@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Room } from "../../types/generated";
 import { Location } from "history";
 import { UserContext } from "../../contexts/user";
+import {toast} from "react-toastify";
 
 interface RoomState {
   room: Room;
@@ -80,10 +81,9 @@ const ReservationForm = () => {
     });
 
     if (error) {
-      alert("Reservation failed");
       return;
     }
-    alert("Reservation successful");
+    toast.success("Reservation placed!");
     navigate("/reservations", { state: { reservation } });
 
     // TODO: show a success message.. maybe snackbar.. and redirect to the reservations page
