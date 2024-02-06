@@ -5,7 +5,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import {toast} from 'react-toastify';
 
 interface RoomSearchProps {
   searchRooms: (checkIn: string, checkOut: string, roomType: string) => void;
@@ -18,6 +19,12 @@ export function RoomSearchBar(props: RoomSearchProps) {
   const [roomType, setRoomType] = React.useState("Single");
   const [checkIn, setCheckIn] = React.useState<Date | null>(new Date());
   const [checkOut, setCheckOut] = React.useState<Date | null>(new Date());
+
+  useEffect(() => {
+    if (!!error) {
+      toast.error(error.message);
+    }
+  }, [error]);
 
   const handleRoomTypeChange = (event: any) => {
     setRoomType(event.target.value as string);
@@ -104,7 +111,6 @@ export function RoomSearchBar(props: RoomSearchProps) {
           <Typography>Search</Typography>
         )}
       </Button>
-      {error && <Typography color="red">{error.message}</Typography>}
     </Box>
   );
 }
