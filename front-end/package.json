@@ -8,7 +8,6 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.6",
-    "@mui/styles": "^5.15.7",
     "@mui/x-date-pickers": "^6.19.0",
     "@openapitools/openapi-generator-cli": "^2.9.0",
     "@testing-library/jest-dom": "^5.17.0",
@@ -55,7 +54,6 @@
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
-    "prettier": "^3.2.5",
-    "typescript": "^5.3.3"
+    "prettier": "^3.2.5"
   }
 }
