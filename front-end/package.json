@@ -2,9 +2,11 @@
   "name": "hotel-reservation-app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:9090",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.6",
     "@mui/x-date-pickers": "^6.19.0",
     "@openapitools/openapi-generator-cli": "^2.9.0",
@@ -18,6 +20,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
+    "http-proxy-middleware": "^2.0.6",
     "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -34,13 +37,8 @@
     "eject": "react-scripts eject",
     "generate-types": "npm run generate-types-with-apis && npm run clean-up-generated-apis",
     "generate-types-with-apis": "openapi-generator-cli generate -i ./../resources/reservations_openapi.yaml -g typescript-axios -o src/types/generated --additional-properties=withSeparateModelsAndApi=true,supportsES6=true,withInterfaces=true,apiPackage=api,modelPackage=model,apiPackage=null",
-    "clean-up-generated-apis": "cp -R src/types/generated/model src/types/temp_gen; rm -rf cp src/types/generated; mv src/types/temp_gen src/types/generated"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "clean-up-generated-apis": "cp -R src/types/generated/model src/types/temp_gen; rm -rf cp src/types/generated; mv src/types/temp_gen src/types/generated",
+    "format": "prettier --write 'src/**/*.{js,ts,tsx,json}'"
   },
   "browserslist": {
     "production": [
@@ -55,6 +53,7 @@
     ]
   },
   "devDependencies": {
-    "@types/js-cookie": "^3.0.6"
+    "@types/js-cookie": "^3.0.6",
+    "prettier": "^3.2.5"
   }
 }
