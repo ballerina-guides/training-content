@@ -102,6 +102,7 @@ export function RoomSearchBar(props: RoomSearchProps) {
           >
             <MenuItem value={"Single"}>Single</MenuItem>
             <MenuItem value={"Double"}>Double</MenuItem>
+            <MenuItem value={"Family"}>Family</MenuItem>
           </TextField>
         </Box>
       </Box>
