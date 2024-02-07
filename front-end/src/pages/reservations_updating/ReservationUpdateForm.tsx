@@ -8,10 +8,10 @@ import {
 } from "@mui/material";
 import { useUpdateReservation } from "../../hooks/reservations";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Reservation, Room } from "../../types/generated";
+import { Reservation } from "../../types/generated";
 import { Location } from "history";
-import { UserContext } from "../../contexts/user";
 import {toast} from "react-toastify";
+import { formatDate } from "../../utils/utils";
 
 interface ReservationState {
   reservation: Reservation;
@@ -21,28 +21,36 @@ const ReservationUpdateForm = () => {
   const { updateReservation, updated, updating, error } =
     useUpdateReservation();
 
-  const user = useContext(UserContext);
-
   const {
     state: { reservation },
   } = useLocation() as Location<ReservationState>;
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    checkinDate: "",
-    checkoutDate: "",
-  });
+  const [checkIn, setCheckIn] = React.useState<Date>(new Date());
+  const [checkOut, setCheckOut] = React.useState<Date>(new Date());
+  const [maxCheckInDate, setMaxCheckInDate] = React.useState<string | undefined>(
+    undefined
+  );
 
-  const handleDateChange = (name: string) => (e: any) => {
+  const handleCheckInChange = (e: any) => {
     const { value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: new Date(value).toISOString(),
-    }));
+    const checkInDate = new Date(value);
+    setCheckIn(checkInDate);
+    if (checkOut < checkInDate) setCheckOut(checkInDate);
+  };
+
+  const handleCheckOutChange = (e: any) => {
+    const { value } = e.target;
+    const checkOutDate = new Date(value);
+    setCheckOut(checkOutDate);
+    setMaxCheckInDate(formatDate(checkOutDate));
   };
 
   const handleReserve = async () => {
-    await updateReservation(reservation.id, formData);
+    await updateReservation(reservation.id, {
+      checkinDate: checkIn.toISOString(),
+      checkoutDate: checkOut.toISOString(),
+    });
     if (error) {
       toast.error("Error occurred while updating the reservation");
       return;
@@ -73,22 +81,29 @@ const ReservationUpdateForm = () => {
       >
         <Box width="48%">
           <TextField
-            onChange={handleDateChange("checkinDate")}
+            onChange={handleCheckInChange}
             fullWidth
             label="Check In Date"
             variant="outlined"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={formatDate(checkIn)}
+            inputProps={{
+              min: formatDate(new Date()),
+              max: maxCheckInDate,
+            }}
           />
         </Box>
         <Box width="48%">
           <TextField
-            onChange={handleDateChange("checkoutDate")}
+            onChange={handleCheckOutChange}
             fullWidth
             label="Check Out Date"
             variant="outlined"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={formatDate(checkOut)}
+            inputProps={{ min: formatDate(checkIn) }}
           />
         </Box>
       </Box>

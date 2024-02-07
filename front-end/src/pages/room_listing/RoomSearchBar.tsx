@@ -1,12 +1,7 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
+import { formatDate } from "../../utils/utils";
 
 interface RoomSearchProps {
   searchRooms: (checkIn: string, checkOut: string, roomType: string) => void;
@@ -17,8 +12,11 @@ interface RoomSearchProps {
 export function RoomSearchBar(props: RoomSearchProps) {
   const { searchRooms, loading, error } = props;
   const [roomType, setRoomType] = React.useState("Single");
-  const [checkIn, setCheckIn] = React.useState<Date | null>(new Date());
-  const [checkOut, setCheckOut] = React.useState<Date | null>(new Date());
+  const [checkIn, setCheckIn] = React.useState<Date>(new Date());
+  const [checkOut, setCheckOut] = React.useState<Date>(new Date());
+  const [maxCheckInDate, setMaxCheckInDate] = React.useState<string | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (!!error) {
@@ -32,12 +30,16 @@ export function RoomSearchBar(props: RoomSearchProps) {
 
   const handleCheckInChange = (e: any) => {
     const { value } = e.target;
-    setCheckIn(new Date(value));
+    const checkInDate = new Date(value);
+    setCheckIn(checkInDate);
+    if (checkOut < checkInDate) setCheckOut(checkInDate);
   };
 
   const handleCheckOutChange = (e: any) => {
     const { value } = e.target;
-    setCheckOut(new Date(value));
+    const checkOutDate = new Date(value);
+    setCheckOut(checkOutDate);
+    setMaxCheckInDate(formatDate(checkOutDate));
   };
 
   const handleRoomSearch = () => {
@@ -68,20 +70,23 @@ export function RoomSearchBar(props: RoomSearchProps) {
             variant="filled"
             type="date"
             InputLabelProps={{ shrink: true }}
-            value={checkIn?.toISOString().split("T")[0]}
-            inputProps={{ min: new Date().toISOString().split("T")[0] }}
+            value={formatDate(checkIn)}
+            inputProps={{
+              min: formatDate(new Date()),
+              max: maxCheckInDate,
+            }}
           />
         </Box>
         <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
           <TextField
             onChange={handleCheckOutChange}
             fullWidth
-            label="Check In Date"
+            label="Check Out Date"
             variant="filled"
             type="date"
             InputLabelProps={{ shrink: true }}
-            value={checkOut?.toISOString().split("T")[0]}
-            inputProps={{ min: new Date().toISOString().split("T")[0] }}
+            value={formatDate(checkOut)}
+            inputProps={{ min: formatDate(checkIn) }}
           />
         </Box>
         <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
@@ -101,10 +106,12 @@ export function RoomSearchBar(props: RoomSearchProps) {
         </Box>
       </Box>
       <Button
-        style={{ textTransform: "none", width: "20%", borderRadius: '8px' }}
+        style={{ textTransform: "none", width: "20%", borderRadius: "8px" }}
         variant="contained"
         onClick={handleRoomSearch}
-        disabled={checkIn === null || checkOut === null || loading || roomType === ""}
+        disabled={
+          checkIn === null || checkOut === null || loading || roomType === ""
+        }
       >
         {loading ? (
           <Typography>Searching...</Typography>

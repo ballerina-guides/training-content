@@ -11,7 +11,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Room } from "../../types/generated";
 import { Location } from "history";
 import { UserContext } from "../../contexts/user";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { formatDate } from "../../utils/utils";
 
 interface RoomState {
   room: Room;
@@ -32,9 +33,26 @@ const ReservationForm = () => {
     lastName: "",
     mobileNumber: "",
     emailAddress: "",
-    checkinDate: "",
-    checkoutDate: "",
   });
+  const [checkIn, setCheckIn] = React.useState<Date>(new Date());
+  const [checkOut, setCheckOut] = React.useState<Date>(new Date());
+  const [maxCheckInDate, setMaxCheckInDate] = React.useState<
+    string | undefined
+  >(undefined);
+
+  const handleCheckInChange = (e: any) => {
+    const { value } = e.target;
+    const checkInDate = new Date(value);
+    setCheckIn(checkInDate);
+    if (checkOut < checkInDate) setCheckOut(checkInDate);
+  };
+
+  const handleCheckOutChange = (e: any) => {
+    const { value } = e.target;
+    const checkOutDate = new Date(value);
+    setCheckOut(checkOutDate);
+    setMaxCheckInDate(formatDate(checkOutDate));
+  };
 
   const handleTextChange = (name: string) => (e: any) => {
     const { value } = e.target;
@@ -44,28 +62,18 @@ const ReservationForm = () => {
     }));
   };
 
-  const handleDateChange = (name: string) => (e: any) => {
-    const { value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: new Date(value).toISOString(),
-    }));
-  };
-
   const handleReserve = async () => {
     const {
       firstName,
       lastName,
       mobileNumber,
       emailAddress,
-      checkinDate,
-      checkoutDate,
     } = formData;
     console.log("formData", formData);
 
     await reserveRoom({
-      checkinDate,
-      checkoutDate,
+      checkinDate: checkIn.toISOString(),
+      checkoutDate: checkOut.toISOString(),
       rate: 100,
       roomType: room.type.name,
       user: {
@@ -145,22 +153,29 @@ const ReservationForm = () => {
       >
         <Box width="48%">
           <TextField
-            onChange={handleDateChange("checkinDate")}
+            onChange={handleCheckInChange}
             fullWidth
             label="Check In Date"
             variant="outlined"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={formatDate(checkIn)}
+            inputProps={{
+              min: formatDate(new Date()),
+              max: maxCheckInDate,
+            }}
           />
         </Box>
         <Box width="48%">
           <TextField
-            onChange={handleDateChange("checkoutDate")}
+            onChange={handleCheckOutChange}
             fullWidth
             label="Check Out Date"
             variant="outlined"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={formatDate(checkOut)}
+            inputProps={{ min: formatDate(checkIn) }}
           />
         </Box>
       </Box>

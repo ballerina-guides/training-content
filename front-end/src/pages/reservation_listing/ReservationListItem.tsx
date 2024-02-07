@@ -6,10 +6,7 @@ import { useDeleteReservation } from "../../hooks/reservations";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../../contexts/user";
-
-function formatDate(date: string) {
-  return date.split("T")[0];
-}
+import { formatDateString } from "../../utils/utils";
 
 export default function ReservationListItem(props: {
   reservation: Reservation;
@@ -83,9 +80,9 @@ export default function ReservationListItem(props: {
           <span style={{ color: "black" }}>User:</span> {reservation.user?.id}
         </Typography>
         <Typography style={{ color: "grey" }}>
-          <span style={{ color: "black" }}>Check-In:</span> {formatDate(reservation.checkinDate)}{" "}
+          <span style={{ color: "black" }}>Check-In:</span> {formatDateString(reservation.checkinDate)}{" "}
           <span style={{ color: "grey", marginLeft: "8px", marginRight: "8px" }}>|</span>{" "}
-          <span style={{ color: "black" }}>Check-Out:</span> {formatDate(reservation.checkoutDate)}
+          <span style={{ color: "black" }}>Check-Out:</span> {formatDateString(reservation.checkoutDate)}
         </Typography>
       </Box>
 
