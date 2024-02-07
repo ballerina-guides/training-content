@@ -6,6 +6,7 @@ import { useDeleteReservation } from "../../hooks/reservations";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../../contexts/user";
+import { formatDateString } from "../../utils/utils";
 
 export default function ReservationListItem(props: {
   reservation: Reservation;
@@ -50,7 +51,9 @@ export default function ReservationListItem(props: {
         alignItems="flex=start"
       >
         <Box>
-          <Typography>{reservation.room.type.name}</Typography>
+          <Typography variant="h6" color="grey">
+            {reservation.room.type.name}
+          </Typography>
         </Box>
         <Box display="flex" justifyContent="flex-start" alignItems="center">
           <Box>
@@ -70,13 +73,16 @@ export default function ReservationListItem(props: {
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        alignItems="center"
       >
-        {/* TODO: display more meaningful details */}
-        <Typography>
-          Room: {reservation.room.number}, User: {reservation.user?.id},
-          Check-In: {reservation.checkinDate}, Check-Out:{" "}
-          {reservation.checkoutDate}
+        <Typography style={{ color: "grey" }}>
+          <span style={{ color: "black" }}>Room:</span> {reservation.room.number}{" "}
+          <span style={{ color: "grey", marginLeft: "8px", marginRight: "8px" }}>|</span>{" "}
+          <span style={{ color: "black" }}>User:</span> {reservation.user?.id}
+        </Typography>
+        <Typography style={{ color: "grey" }}>
+          <span style={{ color: "black" }}>Check-In:</span> {formatDateString(reservation.checkinDate)}{" "}
+          <span style={{ color: "grey", marginLeft: "8px", marginRight: "8px" }}>|</span>{" "}
+          <span style={{ color: "black" }}>Check-Out:</span> {formatDateString(reservation.checkoutDate)}
         </Typography>
       </Box>
 
@@ -88,7 +94,7 @@ export default function ReservationListItem(props: {
         justifyContent="center"
         alignItems="flex-end"
       >
-        <Typography>{reservation.room.type.price} $ /day</Typography>
+        <Typography>{reservation.room.type.price}$ /day</Typography>
       </Box>
 
       <Box
