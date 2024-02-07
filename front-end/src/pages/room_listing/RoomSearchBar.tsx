@@ -69,6 +69,7 @@ export function RoomSearchBar(props: RoomSearchProps) {
             type="date"
             InputLabelProps={{ shrink: true }}
             value={checkIn?.toISOString().split("T")[0]}
+            inputProps={{ min: new Date().toISOString().split("T")[0] }}
           />
         </Box>
         <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
@@ -80,6 +81,7 @@ export function RoomSearchBar(props: RoomSearchProps) {
             type="date"
             InputLabelProps={{ shrink: true }}
             value={checkOut?.toISOString().split("T")[0]}
+            inputProps={{ min: new Date().toISOString().split("T")[0] }}
           />
         </Box>
         <Box style={{ backgroundColor: "white" }} width="30%" borderRadius={2}>
@@ -95,7 +97,6 @@ export function RoomSearchBar(props: RoomSearchProps) {
           >
             <MenuItem value={"Single"}>Single</MenuItem>
             <MenuItem value={"Double"}>Double</MenuItem>
-            <MenuItem value={"Suit"}>Suit</MenuItem>
           </TextField>
         </Box>
       </Box>

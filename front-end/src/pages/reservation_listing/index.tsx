@@ -4,17 +4,22 @@ import { useGetReservations } from "../../hooks/reservations";
 import ReservationListItem from "./ReservationListItem";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/user";
+import { toast } from "react-toastify";
 
 function ReservationListing() {
   const user = useContext(UserContext);
-  // TODO: use loader and error handling
   const { fetchReservations, reservations, loading, error } =
     useGetReservations();
 
-  // TODO: try and avoid fetching reservations twice
   useEffect(() => {
     fetchReservations(user?.id);
   }, []);
+
+  useEffect(() => {
+    if (!!error) {
+      toast.error(error.message);
+    }
+  }, [error]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "70%" }}>

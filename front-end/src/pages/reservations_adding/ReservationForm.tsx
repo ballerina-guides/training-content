@@ -36,8 +36,6 @@ const ReservationForm = () => {
     checkoutDate: "",
   });
 
-  // TODO: check why these handlers are not working with chrome auto data fill
-
   const handleTextChange = (name: string) => (e: any) => {
     const { value } = e.target;
     setFormData((prevData) => ({
@@ -55,8 +53,6 @@ const ReservationForm = () => {
   };
 
   const handleReserve = async () => {
-    console.log("handleReserve");
-    // TODO: remove comment input field
     const {
       firstName,
       lastName,
@@ -85,8 +81,6 @@ const ReservationForm = () => {
     }
     toast.success("Reservation placed!");
     navigate("/reservations", { state: { reservation } });
-
-    // TODO: show a success message.. maybe snackbar.. and redirect to the reservations page
   };
 
   return (

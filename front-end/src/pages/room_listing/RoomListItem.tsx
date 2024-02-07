@@ -27,7 +27,7 @@ export default function RoomListItem(props: { room: Room }) {
         alignItems="flex=start"
       >
         <Box>
-          <Typography>{room.type.name}</Typography>
+          <Typography variant="h6" color="grey">{room.type.name}</Typography>
         </Box>
         <Box display="flex" justifyContent="flex-start" alignItems="center">
           <Box>
@@ -60,7 +60,7 @@ export default function RoomListItem(props: { room: Room }) {
         justifyContent="center"
         alignItems="flex-end"
       >
-        <Typography>{room.type.price} $ /day</Typography>
+        <Typography>{room.type.price}$ /day</Typography>
       </Box>
 
       <Box
