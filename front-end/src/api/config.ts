@@ -6,4 +6,4 @@ declare global {
   }
 }
 
-export const apiUrl = window?.configs?.apiUrl ? `${window.configs.apiUrl}/reservations` : "http://localhost:3000/reservations";
+export const apiUrl = window?.configs?.apiUrl ? window.configs.apiUrl : "http://localhost:3000/reservations";
