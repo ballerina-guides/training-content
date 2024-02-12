@@ -10,9 +10,9 @@ servers:
     port:
       default: "9090"
 paths:
-  /rooms:
+  /roomTypes:
     get:
-      operationId: getRooms
+      operationId: getRoomtypes
       parameters:
       - name: checkinDate
         in: query
@@ -24,11 +24,12 @@ paths:
         required: true
         schema:
           type: string
-      - name: roomType
+      - name: guestCapacity
         in: query
         required: true
         schema:
-          type: string
+          type: integer
+          format: int64
       responses:
         "200":
           description: Ok
@@ -37,7 +38,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Room'
+                  $ref: '#/components/schemas/RoomType'
         "500":
           description: Internal server error
           content:
