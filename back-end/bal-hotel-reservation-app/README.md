@@ -1,4 +1,4 @@
-# Hotel Reservation Ballerina APP
+# Hotel Reservation Ballerina API
 
 This ballerina project exposes reservation http service. 
 
@@ -8,9 +8,9 @@ http:localhost:9090/reservations
 
 ## Resources
 
-### 1) Get All available rooms
+### 1) Get All available room Types
 
-**Path** : /rooms/
+**Path** : /roomTypes/
 
 **HTTP Method:** GET
 
@@ -18,32 +18,29 @@ http:localhost:9090/reservations
 
     string checkinDate
     string checkoutDate
-    string roomType
+    int guestCapacity
 
 **Sample Response :**
 
 ```json
 
-[
+json j = [
     {
-        "number": 101,
-        "type": {
-            "id": 0,
-            "name": "Single",
-            "guestCapacity": 1,
-            "price": 80
-        }
+        "id": 0,
+        "name": "Single",
+        "guestCapacity": 1,
+        "price": 80
+
     },
+
     {
-        "number": 102,
-        "type": {
-            "id": 0,
-            "name": "Double",
-            "guestCapacity": 2,
-            "price": 100
-        }
+        "id": 0,
+        "name": "Double",
+        "guestCapacity": 2,
+        "price": 100
     }
-]
+
+];
 
 ```
 

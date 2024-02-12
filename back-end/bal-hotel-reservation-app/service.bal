@@ -15,8 +15,8 @@ sendemail:Client emailClient = check new ();
 
 service /reservations on new http:Listener(9090) {
 
-    resource function get rooms(string checkinDate, string checkoutDate, string roomType) returns Room[]|error {
-        return getAvailableRooms(checkinDate, checkoutDate, roomType);
+    resource function get roomTypes(string checkinDate, string checkoutDate, int guestCapacity) returns RoomType[]|error {
+        return getAvailableRoomTypes(checkinDate, checkoutDate, guestCapacity);
     }
 
     resource function post .(ReservationRequest reservationRequest) returns Reservation|ReservationError|error {

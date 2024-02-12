@@ -1,4 +1,5 @@
 import ballerina/http;
+import ballerina/io;
 import ballerina/test;
 
 http:Client testClient = check new ("http://localhost:9090");
@@ -8,10 +9,11 @@ configurable User user = ?;
 @test:Config {}
 function testReservation() returns error? {
     // Get available Rooms
-    Room[] availableRooms = check testClient->get("/reservations/rooms?checkinDate=2024-02-19T14:00:00Z&checkoutDate=2024-02-20T10:00:00Z&roomType=Family");
-    test:assertEquals(availableRooms.length(), 2, "Invalid rooms length");
-    test:assertEquals(availableRooms[0].number, 303);
-    test:assertEquals(availableRooms[1].number, 403);
+    RoomType[] roomTypes = check testClient->get("/reservations/roomTypes?checkinDate=2024-02-19T14:00:00Z&checkoutDate=2024-02-20T10:00:00Z&guestCapacity=3");
+    io:println(roomTypes);
+    test:assertEquals(roomTypes.length(), 2, "Invalid room types length");
+    test:assertEquals(roomTypes[0].name, "Family");
+    test:assertEquals(roomTypes[1].name, "Suite");
 
     // Create a reservation
     ReservationRequest reservationRequest = {checkinDate: "2024-02-19T14:00:00Z", checkoutDate: "2024-02-20T10:00:00Z", rate: 100, user: user, roomType: "Family"};
@@ -31,22 +33,22 @@ function testReservation() returns error? {
     // Delete a reservation
     http:Response delete = check testClient->delete("/reservations/" + reservation.id.toString());
     test:assertEquals(delete.statusCode, 200);
+
+      // Get Users reservations again
+    reservations = check testClient->get("/reservations/users/123");
+    test:assertEquals(reservations.length(), 0);
 }
 
 @test:Config {}
 function testMultipleReservations() returns error? {
-    // Get available Rooms
-    Room[] availableRooms = check testClient->get("/reservations/rooms?checkinDate=2024-02-19T14:00:00Z&checkoutDate=2024-02-20T10:00:00Z&roomType=Suite");
-    test:assertEquals(availableRooms.length(), 3, "Invalid rooms length");
 
     ReservationRequest reservationRequest;
     Reservation[] reservations = [];
-
     // Create 3 reservations
     foreach int i in 0 ... 2 {
         reservationRequest = {checkoutDate: "2024-02-20T10:00:00Z", rate: 100, checkinDate: "2024-02-19T14:00:00Z", user: user, roomType: "Suite"};
         reservations[i] = check testClient->post("/reservations", reservationRequest);
-        test:assertEquals(reservations[i].room.number, availableRooms[i].number);
+        test:assertEquals(reservations[i].id, i + 1);
     }
 
     // Create addtional reservation and get No rooms available message
