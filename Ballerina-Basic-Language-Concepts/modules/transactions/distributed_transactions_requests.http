@@ -1,0 +1,6 @@
+POST http://localhost:8081/bookings/
+content-type: application/json
+
+{
+    "number": 101
+}

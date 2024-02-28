@@ -1,0 +1,27 @@
+
+### Get all products
+GET http://localhost:8009/store/products/Coke
+
+### Get a product by name Coke
+GET http://localhost:8009/store/products/
+
+
+### Add existing product to store
+POST http://localhost:8009/store/products?update=true
+content-type: application/json
+
+{
+    "name": "Coke",
+    "price": 1.99
+}
+
+### Add new product to store
+POST http://localhost:8009/store/products?update=false
+content-type: application/json
+
+{
+    "name": "Cake",
+    "price": 1.99
+}
+
+
